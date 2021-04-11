@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+  mariadb_1:
+    image: mariadb:10.0.38
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: secretary_db_1
+      MYSQL_USER: normal_user
+      MYSQL_PASSWORD: normal_password
+    ports:
+    - "8181:3306"
+    volumes:
+    - ./db:/docker-entrypoint-initdb.d
+  mariadb_2:
+    image: mariadb:10.0.38
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: secretary_db_2
+      MYSQL_USER: normal_user
+      MYSQL_PASSWORD: normal_password
+    ports:
+    - "8182:3306"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+  secretary:
+    container_name: secretary
+    build: .
+    ports:
+    - "8080:8080"
+    - "8081:8081"
+    - "5005:5005"
+    volumes:
+    - /var/log/secretary
+    environment:
+      DEBUG_OPTS_JAVA: -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n
+      SHARD0_CONNECTION_STRING: jdbc:mariadb://mariadb_1/secretary_db_1?createDatabaseIfNotExist=true
+      SHARD1_CONNECTION_STRING: jdbc:mariadb://mariadb_2/secretary_db_2?createDatabaseIfNotExist=true
+      DB_USER: root
+      DB_PASSWORD: password
+    depends_on:
+      - mariadb_1
+      - mariadb_2
