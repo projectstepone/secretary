@@ -22,5 +22,12 @@ EXEC_CMD="java -Ddb.shards=${SHARDS-2} -Dfile.encoding=utf-8 -XX:+${GC_ALGO-UseG
 
 echo "Number of database shards: ${SHARDS}"
 
+if [ -z "${SLEEP_TIME_IN_SEC}" ]; then
+    echo "Skip delayed startup"
+else
+    echo "Delayed launch for service. Sleeping for some time"
+    sleep ${SLEEP_TIME_IN_SEC}
+fi
+
 echo "Starting server with command line: ${EXEC_CMD}"
 $EXEC_CMD

@@ -3,9 +3,9 @@
 How to start the secretary application
 ---
 
-1. Run `mvn clean install` to build your application
-1. Start application with `java -jar target/secretary.jar server config.yml`
-1. To check that your application is running enter url `http://localhost:8080`
+1. Run `mvn clean package` to build jar for application
+2. Run docker-compose to launch service `docker-compose up --build -d`
+1. To check that your application is running enter url `http://localhost:8080/secretary`
 
 Health Check
 ---

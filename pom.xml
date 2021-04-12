@@ -18,6 +18,12 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>1.3.20</dropwizard.version>
         <mainClass>io.appform.secretary.App</mainClass>
+
+        <dbsharding.version>1.3.13-6</dbsharding.version>
+        <lombok.version>1.18.12</lombok.version>
+        <guice.version>4.2.0</guice.version>
+        <swagger.version>1.3.7-1</swagger.version>
+        <mariadb.version>2.2.0</mariadb.version>
     </properties>
 
     <dependencyManagement>
@@ -36,6 +42,31 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.appform.dropwizard.sharding</groupId>
+            <artifactId>db-sharding-bundle</artifactId>
+            <version>${dbsharding.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.vyarus</groupId>
+            <artifactId>dropwizard-guicey</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.smoketurner</groupId>
+            <artifactId>dropwizard-swagger</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>${mariadb.version}</version>
         </dependency>
     </dependencies>
 

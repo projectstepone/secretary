@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as local
 
 RUN apt-get clean \
  && apt-get update \
@@ -10,3 +10,8 @@ ADD target/secretary.jar server.jar
 ADD startup.sh startup.sh
 
 CMD ./startup.sh
+
+FROM local as prod
+
+EXPOSE 8080
+EXPOSE 8081

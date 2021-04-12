@@ -1,11 +1,12 @@
-version: '2'
+version: '3'
 
 services:
   mariadb_1:
     image: mariadb:10.0.38
+    hostname : mariadb_1
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: secretary_db_1
+      MYSQL_DATABASE: secretary_db
       MYSQL_USER: normal_user
       MYSQL_PASSWORD: normal_password
     ports:
@@ -14,9 +15,10 @@ services:
     - ./db:/docker-entrypoint-initdb.d
   mariadb_2:
     image: mariadb:10.0.38
+    hostname : mariadb_1
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: secretary_db_2
+      MYSQL_DATABASE: secretary_db
       MYSQL_USER: normal_user
       MYSQL_PASSWORD: normal_password
     ports:
@@ -25,7 +27,9 @@ services:
       - ./db:/docker-entrypoint-initdb.d
   secretary:
     container_name: secretary
-    build: .
+    build:
+      target : local
+      context : .
     ports:
     - "8080:8080"
     - "8081:8081"
@@ -34,10 +38,11 @@ services:
     - /var/log/secretary
     environment:
       DEBUG_OPTS_JAVA: -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n
-      SHARD0_CONNECTION_STRING: jdbc:mariadb://mariadb_1/secretary_db_1?createDatabaseIfNotExist=true
-      SHARD1_CONNECTION_STRING: jdbc:mariadb://mariadb_2/secretary_db_2?createDatabaseIfNotExist=true
+      SHARD0_CONNECTION_STRING: jdbc:mariadb://mariadb_1/secretary_db?createDatabaseIfNotExist=true
+      SHARD1_CONNECTION_STRING: jdbc:mariadb://mariadb_2/secretary_db?createDatabaseIfNotExist=true
       DB_USER: root
       DB_PASSWORD: password
+      SLEEP_TIME_IN_SEC: 10
     depends_on:
       - mariadb_1
       - mariadb_2
