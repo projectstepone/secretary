@@ -14,6 +14,7 @@ import io.appform.secretary.utils.MapperUtils;
 import io.dropwizard.Application;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
@@ -46,7 +47,8 @@ public class App extends Application<AppConfig> {
 
         bootstrap.addBundle(dbBundle);
         bootstrap.addBundle(getGuiceBundle(dbBundle));
-        bootstrap.addBundle(swaggerBundle());
+        bootstrap.addBundle(getSwaggerBundle());
+        bootstrap.addBundle(new MultiPartBundle());
     }
 
     @Override
@@ -71,7 +73,7 @@ public class App extends Application<AppConfig> {
                 .build(Stage.PRODUCTION);
     }
 
-    private SwaggerBundle<AppConfig> swaggerBundle() {
+    private SwaggerBundle<AppConfig> getSwaggerBundle() {
         return new SwaggerBundle<AppConfig>() {
             @Override
             protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(AppConfig config) {
