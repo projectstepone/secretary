@@ -1,5 +1,6 @@
 package io.appform.secretary.resources;
 
+import io.appform.secretary.executor.FileDataExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,9 @@ import java.io.InputStream;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class BulkDataResource {
 
+    private final FileDataExecutor executor;
+
+    //TODO: Fix compatibility issue between Swagger and Dropwizard Forms
     @POST
     @Path("/file/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -37,7 +41,9 @@ public class BulkDataResource {
         log.info("Received upload request: Filename : {} Workflow: {}",
                 fileMetaData.getName(), workflow);
 
-        //TODO: Add logic for processing file
+        //TODO: Convert workflow from string to an enum as part of sanity check
+        executor.processFile(fileStream, workflow);
+
         return Response.ok().build();
     }
 }
