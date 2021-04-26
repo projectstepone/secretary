@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.dao.LookupDao;
+import io.appform.secretary.dao.StoredFileData;
 import io.appform.secretary.dao.StoredValidationSchema;
 
 public class DBModule extends AbstractModule {
@@ -19,5 +20,11 @@ public class DBModule extends AbstractModule {
     @Provides
     public LookupDao<StoredValidationSchema> providerStoredValidationSchemaLookupDao() {
         return dbBundle.createParentObjectDao(StoredValidationSchema.class);
+    }
+
+    @Singleton
+    @Provides
+    public LookupDao<StoredFileData> providerStoredFileDataLookupDao() {
+        return dbBundle.createParentObjectDao(StoredFileData.class);
     }
 }

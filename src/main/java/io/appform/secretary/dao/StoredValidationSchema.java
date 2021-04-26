@@ -20,8 +20,8 @@ import java.util.Date;
 @Entity
 @Table(name = "validation_schema",
         uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"uuid"}),
-        @UniqueConstraint(columnNames = {"name", "version"})}
+                @UniqueConstraint(columnNames = {"uuid"}),
+                @UniqueConstraint(columnNames = {"name", "version"})}
         )
 @Data
 @Builder

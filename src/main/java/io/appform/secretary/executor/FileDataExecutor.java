@@ -1,11 +1,15 @@
 package io.appform.secretary.executor;
 
 import com.google.inject.Singleton;
+import io.appform.secretary.command.FileDataDBCommand;
 import io.appform.secretary.command.KafkaProducerCommand;
 import io.appform.secretary.model.DataEntry;
+import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.KafkaMessage;
+import io.appform.secretary.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
 import java.io.BufferedReader;
@@ -24,10 +28,22 @@ public class FileDataExecutor implements DataExecutor {
 
     private static final String KAFKA_TOPIC_FILEDATA_INGESTION = "secretary.filedata.random";
     private final KafkaProducerCommand kafkaProducer;
+    private final FileDataDBCommand dbCommand;
 
     @Override
-    public void processFile(InputStream dataStream, String workflow) {
+    public void processFile(InputStream dataStream, String filename, String workflow, String userId) {
         try {
+            byte[] data = IOUtils.toByteArray(dataStream);
+            FileData fileData = FileData.builder()
+                    .name(filename)
+                    .workflow(workflow)
+                    .user(userId)
+                    .processed(false)
+                    .hash(CommonUtils.getHash(data))
+                    .build();
+            dbCommand.save(fileData);
+
+
             //TODO: Add entry in DB for file with state as ACCEPTED and send event
             //TODO: Send event about file acceptance
 
@@ -86,4 +102,5 @@ public class FileDataExecutor implements DataExecutor {
                 .map(entry -> entry.replace(" ", "_"))
                 .collect(Collectors.toList());
     }
+
 }
