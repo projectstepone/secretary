@@ -2,6 +2,7 @@ package io.appform.secretary;
 
 
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
+import io.appform.secretary.model.configuration.KafkaProducerConfiguration;
 import io.dropwizard.Configuration;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import lombok.AllArgsConstructor;
@@ -25,4 +26,8 @@ public class AppConfig extends Configuration {
     @NotNull
     @Valid
     private SwaggerBundleConfiguration swagger = new SwaggerBundleConfiguration();
+
+    @NotNull
+    @Valid
+    private KafkaProducerConfiguration producer;
 }

@@ -1,7 +1,9 @@
 package io.appform.secretary.executor;
 
 import com.google.inject.Singleton;
+import io.appform.secretary.command.KafkaProducerCommand;
 import io.appform.secretary.model.DataEntry;
+import io.appform.secretary.model.KafkaMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,12 +14,16 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class FileDataExecutor implements DataExecutor {
+
+    private static final String KAFKA_TOPIC_FILEDATA_INGESTION = "secretary.filedata.random";
+    private final KafkaProducerCommand kafkaProducer;
 
     @Override
     public void processFile(InputStream dataStream, String workflow) {
@@ -32,12 +38,16 @@ public class FileDataExecutor implements DataExecutor {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            //TODO: Remove temporary log
-            validEntries.forEach(entry -> {log.info("Entry: {}", entry);});
-
             //TODO: Update file state in DB to PARSED and send event
 
-            //TODO: Push valid entries to Kafka
+            List<KafkaMessage> messages = validEntries.stream()
+                    .map(entry -> KafkaMessage.builder()
+                            .topic(KAFKA_TOPIC_FILEDATA_INGESTION)
+                            .key(UUID.randomUUID().toString())
+                            .value(entry.getEntryList().toString())
+                            .build())
+                    .collect(Collectors.toList());
+            kafkaProducer.push(messages);
 
             //TODO: Update file state in DB to CONSUMED and send event
         } catch (Exception ex) {

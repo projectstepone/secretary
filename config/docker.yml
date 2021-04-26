@@ -71,3 +71,13 @@ swagger:
   resourcePackage: io.appform.secretary.resources
   title: Secretary
   description: Secretary Backend
+
+producer:
+  servers: broker:9092
+  ack: all
+  retries: 100
+  batchSize: 100
+  lingerMilliseconds: 1
+  bufferSize: 1024000
+  serializer: org.apache.kafka.common.serialization.StringSerializer
+  deserializer: org.apache.kafka.common.serialization.StringSerializer

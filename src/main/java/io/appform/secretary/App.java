@@ -9,6 +9,7 @@ import com.google.inject.Stage;
 import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
 import io.appform.secretary.exception.GenericExceptionMapper;
+import io.appform.secretary.module.ClientModule;
 import io.appform.secretary.module.DBModule;
 import io.appform.secretary.utils.MapperUtils;
 import io.dropwizard.Application;
@@ -70,6 +71,7 @@ public class App extends Application<AppConfig> {
         return GuiceBundle.<AppConfig>builder()
                 .enableAutoConfig(getClass().getPackage().getName())
                 .modules(new DBModule(dbShardingBundle))
+                .modules(new ClientModule())
                 .build(Stage.PRODUCTION);
     }
 
