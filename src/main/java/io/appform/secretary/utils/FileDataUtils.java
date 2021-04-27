@@ -6,27 +6,27 @@ import io.appform.secretary.model.state.FileState;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class FileDataUtils {
+public class FileDataUtils{
 
-    public FileData toDto(StoredFileData fileData) {
+    public FileData toDto(StoredFileData dao) {
         return FileData.builder()
-                .uuid(fileData.getUuid())
-                .user(fileData.getUser())
-                .name(fileData.getName())
-                .hash(fileData.getHash())
-                .workflow(fileData.getWorkflow())
-                .state(FileState.valueOf(fileData.getState()))
+                .uuid(dao.getUuid())
+                .user(dao.getUser())
+                .name(dao.getName())
+                .hash(dao.getHash())
+                .workflow(dao.getWorkflow())
+                .state(FileState.valueOf(dao.getState()))
                 .build();
     }
 
-    public StoredFileData toDao(FileData fileData) {
+    public StoredFileData toDao(FileData dto) {
         return StoredFileData.builder()
-                .uuid(fileData.getUuid())
-                .name(fileData.getName())
-                .hash(fileData.getHash())
-                .state(fileData.getState().getValue())
-                .user(fileData.getUser())
-                .workflow(fileData.getWorkflow())
+                .uuid(dto.getUuid())
+                .name(dto.getName())
+                .hash(dto.getHash())
+                .state(dto.getState().getValue())
+                .user(dto.getUser())
+                .workflow(dto.getWorkflow())
                 .build();
     }
 }

@@ -18,16 +18,16 @@ import javax.persistence.UniqueConstraint;
 import java.util.Date;
 
 @Entity
-@Table(name = "file_data",
+@Table(name = "workflow",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"uuid"}),
-                @UniqueConstraint(columnNames = {"hashsum"})
-        })
+                @UniqueConstraint(columnNames = {"id"}),
+                @UniqueConstraint(columnNames = {"name"})
+})
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoredFileData {
+public class StoredWorkflow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,23 +35,11 @@ public class StoredFileData {
     private long id;
 
     @LookupKey
-    @Column(name = "uuid")
-    private String uuid;
-
     @Column(name = "name")
     private String name;
 
-    @Column(name = "hashsum")
-    private String hash;
-
-    @Column(name = "user")
-    private String user;
-
-    @Column(name = "workflow")
-    private String workflow;
-
-    @Column(name = "state")
-    private String state;
+    @Column(name = "valid")
+    private boolean enabled;
 
     @Column(name = "created",
             columnDefinition = "timestamp",

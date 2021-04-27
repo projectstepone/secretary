@@ -6,6 +6,7 @@ import io.appform.secretary.command.KafkaProducerCommand;
 import io.appform.secretary.model.DataEntry;
 import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.KafkaMessage;
+import io.appform.secretary.model.state.FileState;
 import io.appform.secretary.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class FileDataExecutor implements DataExecutor {
                     .name(filename)
                     .workflow(workflow)
                     .user(userId)
-                    .processed(false)
+                    .state(FileState.UPLOADED)
                     .hash(CommonUtils.getHash(data))
                     .build();
             dbCommand.save(fileData);

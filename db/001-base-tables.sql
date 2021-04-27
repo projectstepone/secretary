@@ -26,3 +26,13 @@ CREATE TABLE `file_data` (
     UNIQUE KEY `uniq_file_uuid` (`uuid`),
     UNIQUE KEY `uniq_file_hashsum` (`hashsum`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `workflow` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `name` varchar(64) NOT NULL,
+    `valid` bit(1) NOT NULL DEFAULT 0,
+    `created` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+    `updated` datetime(3) NOT NULL DEFAULT current_timestamp(3) ON UPDATE current_timestamp(3),
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uniq_workflow_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

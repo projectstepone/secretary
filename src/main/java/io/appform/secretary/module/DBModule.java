@@ -7,6 +7,7 @@ import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.dao.LookupDao;
 import io.appform.secretary.dao.StoredFileData;
 import io.appform.secretary.dao.StoredValidationSchema;
+import io.appform.secretary.dao.StoredWorkflow;
 
 public class DBModule extends AbstractModule {
 
@@ -26,5 +27,11 @@ public class DBModule extends AbstractModule {
     @Provides
     public LookupDao<StoredFileData> providerStoredFileDataLookupDao() {
         return dbBundle.createParentObjectDao(StoredFileData.class);
+    }
+
+    @Singleton
+    @Provides
+    public LookupDao<StoredWorkflow> providerStoredWorkflowLookupDao() {
+        return dbBundle.createParentObjectDao(StoredWorkflow.class);
     }
 }

@@ -32,7 +32,7 @@ public class StoredValidationSchema {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "id")
-        private String id;
+        private long id;
 
         @LookupKey
         @Column(name = "uuid")
