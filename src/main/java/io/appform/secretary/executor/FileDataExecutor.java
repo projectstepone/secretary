@@ -12,9 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +46,7 @@ public class FileDataExecutor implements DataExecutor {
             //TODO: Add entry in DB for file with state as ACCEPTED and send event
             //TODO: Send event about file acceptance
 
-            List<DataEntry> dataEntries = getRows(dataStream);
+            List<DataEntry> dataEntries = getRows(data);
 
             List<DataEntry> validEntries = dataEntries.stream()
                     .map(this::validateRow)
@@ -87,9 +86,8 @@ public class FileDataExecutor implements DataExecutor {
 
     }
 
-    private List<DataEntry> getRows(InputStream dataStream) {
-        return new BufferedReader(new InputStreamReader(dataStream))
-                .lines()
+    private List<DataEntry> getRows(byte[] data) {
+        return Arrays.stream(new String(data, StandardCharsets.UTF_8).split("\n"))
                 .map(entry -> DataEntry.builder()
                         .entryList(getTokens(entry))
                         .build())
