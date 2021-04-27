@@ -54,7 +54,7 @@ public class FileDataDBCommand implements FileDataProvider {
     public Optional<FileData> update(FileData fileData) {
         try {
             boolean updated = lookupDao.update(fileData.getUuid(), entry -> {
-                entry.ifPresent(file -> file.setProcessed(fileData.isProcessed()));
+                entry.ifPresent(file -> file.setState(fileData.getState().getValue()));
                 return entry.orElse(null);
             });
             return updated ? getFromDb(fileData.getUuid()): Optional.empty();

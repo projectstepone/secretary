@@ -1,5 +1,6 @@
 package io.appform.secretary.model;
 
+import io.appform.secretary.model.state.FileState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +16,5 @@ public class FileData {
     private String user;
     private String workflow;
     private String hash;
-    private boolean processed;
+    private FileState state;
 }

@@ -50,8 +50,8 @@ public class StoredFileData {
     @Column(name = "workflow")
     private String workflow;
 
-    @Column(name = "processed")
-    private boolean processed;
+    @Column(name = "state")
+    private String state;
 
     @Column(name = "created",
             columnDefinition = "timestamp",

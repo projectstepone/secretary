@@ -17,7 +17,7 @@ CREATE TABLE `file_data` (
     `uuid` varchar(64) NOT NULL,
     `name` varchar(64) NOT NULL,
     `hashsum` varchar(128) NOT NULL,
-    `processed` bit(1) NOT NULL DEFAULT 0,
+    `state` varchar(32) NOT NULL,
     `user` varchar(64) NOT NULL,
     `workflow` varchar(64) NOT NULL,
     `created` datetime(3) NOT NULL DEFAULT current_timestamp(3),

@@ -2,6 +2,7 @@ package io.appform.secretary.utils;
 
 import io.appform.secretary.dao.StoredFileData;
 import io.appform.secretary.model.FileData;
+import io.appform.secretary.model.state.FileState;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -14,7 +15,7 @@ public class FileDataUtils {
                 .name(fileData.getName())
                 .hash(fileData.getHash())
                 .workflow(fileData.getWorkflow())
-                .processed(fileData.isProcessed())
+                .state(FileState.valueOf(fileData.getState()))
                 .build();
     }
 
@@ -23,7 +24,7 @@ public class FileDataUtils {
                 .uuid(fileData.getUuid())
                 .name(fileData.getName())
                 .hash(fileData.getHash())
-                .processed(fileData.isProcessed())
+                .state(fileData.getState().getValue())
                 .user(fileData.getUser())
                 .workflow(fileData.getWorkflow())
                 .build();
