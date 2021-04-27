@@ -34,6 +34,12 @@ public class WorkflowResource {
     public Response createWorkflow(@Valid WorkflowCreateRequest request) {
         log.info("Request: Create workflow: {}", request);
 
+        Optional<Workflow> getWorkflow = dbCommand.get(request.getWorkflow());
+        if (getWorkflow.isPresent()) {
+            log.error("Workflow entry for {} is already present", request.getWorkflow());
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
         Optional<Workflow> optionalWorkflow = dbCommand.save(Workflow.builder()
                 .name(request.getWorkflow())
                 .enabled(true)
@@ -55,12 +61,13 @@ public class WorkflowResource {
     public Response updateWorkflow(@Valid WorkflowUpdateRequest request) {
         log.info("Request: Update workflow: {}", request);
 
-        // Possible TICTOU issue
         Optional<Workflow> getWorkflow = dbCommand.get(request.getWorkflow());
         if (!getWorkflow.isPresent()) {
+            log.error("Workflow entry for {} is not present", request.getWorkflow());
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
+        // Possible TICTOU issue
         Optional<Workflow> updateWorkflow = dbCommand.update(Workflow.builder()
                 .name(request.getWorkflow())
                 .enabled(request.isEnabled())

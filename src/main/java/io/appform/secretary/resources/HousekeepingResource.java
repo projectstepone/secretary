@@ -16,10 +16,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Path("/v1/housekeeping")
@@ -62,10 +64,15 @@ public class HousekeepingResource {
     @GET
     @Path("/workflow")
     @ApiOperation("Get information for a workflow")
-    public Response getAllWorkflow() {
+    public Response getAllWorkflow(@QueryParam("active") boolean active) {
         log.info("Request: Get detail for all workflow");
 
         List<Workflow> data = workflowCommand.getAll();
+        if (active) {
+            data = data.stream()
+                    .filter(Workflow::isEnabled)
+                    .collect(Collectors.toList());
+        }
 
         log.info("Response: List of workflow: {}", data);
         return Response.ok().entity(data).build();
