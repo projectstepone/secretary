@@ -11,6 +11,7 @@ import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
 import io.appform.secretary.exception.GenericExceptionMapper;
 import io.appform.secretary.module.ClientModule;
 import io.appform.secretary.module.DBModule;
+import io.appform.secretary.module.ProviderModule;
 import io.appform.secretary.utils.MapperUtils;
 import io.dropwizard.Application;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
@@ -72,6 +73,7 @@ public class App extends Application<AppConfig> {
                 .enableAutoConfig(getClass().getPackage().getName())
                 .modules(new DBModule(dbShardingBundle))
                 .modules(new ClientModule())
+                .modules(new ProviderModule())
                 .build(Stage.PRODUCTION);
     }
 

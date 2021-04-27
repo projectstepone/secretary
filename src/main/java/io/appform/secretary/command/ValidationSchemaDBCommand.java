@@ -10,12 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
 

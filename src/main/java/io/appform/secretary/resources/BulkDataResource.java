@@ -1,7 +1,6 @@
 package io.appform.secretary.resources;
 
-import io.appform.secretary.command.FileDataDBCommand;
-import io.appform.secretary.executor.FileDataExecutor;
+import io.appform.secretary.executor.DataExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +26,7 @@ import java.io.InputStream;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class BulkDataResource {
 
-    private final FileDataExecutor executor;
-    private final FileDataDBCommand dbCommand;
+    private final DataExecutor executor;
 
     //TODO: Fix compatibility issue between Swagger and Dropwizard Forms
     @POST
