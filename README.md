@@ -6,6 +6,7 @@ Local run of application
 - Run `mvn clean package` to build jar for application
 - Run docker-compose to launch service
 ```
+cd secretary-server
 docker-compose up --build -d
 ```
 - Use Kafka client container to create topic
