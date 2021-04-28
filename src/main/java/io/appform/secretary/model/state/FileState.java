@@ -1,16 +1,17 @@
 package io.appform.secretary.model.state;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
 
 public enum FileState {
 
-    UPLOADED(Values.UPLOADED, false),
     ACCEPTED(Values.ACCEPTED, false),
     PROCESSING(Values.PROCESSING, false),
     PROCESSED(Values.PROCESSED, true);
 
     public static final class Values {
-        public static final String UPLOADED = "uploaded";
         public static final String ACCEPTED = "accepted";
         public static final String PROCESSING = "processing";
         public static final String PROCESSED = "processed";
@@ -21,6 +22,14 @@ public enum FileState {
 
     @Getter
     private final boolean processed;
+
+    public static FileState get(String value) {
+
+        return Arrays.stream(FileState.values())
+                .filter(entry -> StringUtils.equals(value, entry.getValue()))
+                .findFirst()
+                .orElseGet(null);
+    }
 
     FileState(String value, boolean processed) {
         this.value = value;

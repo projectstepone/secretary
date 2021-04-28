@@ -15,7 +15,7 @@ public class FileDataUtils{
                 .name(dao.getName())
                 .hash(dao.getHash())
                 .workflow(dao.getWorkflow())
-                .state(FileState.valueOf(dao.getState()))
+                .state(FileState.get(dao.getState()))
                 .build();
     }
 

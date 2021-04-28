@@ -48,6 +48,7 @@ services:
     depends_on:
       - mariadb_1
       - mariadb_2
+      - kafka_client
 
   zookeeper:
     image: confluentinc/cp-zookeeper:5.4.0
@@ -79,7 +80,7 @@ services:
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
 
-  kafka-client:
+  kafka_client:
     image: confluentinc/cp-kafka:5.4.0
     hostname: kafka
     command: ["tail", "-f", "/dev/null"]

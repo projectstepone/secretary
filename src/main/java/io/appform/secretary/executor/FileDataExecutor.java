@@ -5,19 +5,18 @@ import io.appform.secretary.command.FileDataDBCommand;
 import io.appform.secretary.command.KafkaProducerCommand;
 import io.appform.secretary.model.DataEntry;
 import io.appform.secretary.model.FileData;
+import io.appform.secretary.model.InputFileData;
 import io.appform.secretary.model.KafkaMessage;
 import io.appform.secretary.model.state.FileState;
-import io.appform.secretary.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -31,30 +30,24 @@ public class FileDataExecutor implements DataExecutor {
     private final FileDataDBCommand dbCommand;
 
     @Override
-    public void processFile(InputStream dataStream, String filename, String workflow, String userId) {
+    public void processFile(InputFileData data) {
         try {
-            byte[] data = IOUtils.toByteArray(dataStream);
-            FileData fileData = FileData.builder()
-                    .name(filename)
-                    .workflow(workflow)
-                    .user(userId)
-                    .state(FileState.UPLOADED)
-                    .hash(CommonUtils.getHash(data))
-                    .build();
-            dbCommand.save(fileData);
+            FileData savedData = saveEntryInDbAndSendEvent(FileData.builder()
+                    .name(data.getFile())
+                    .workflow(data.getWorkflow())
+                    .user(data.getUser())
+                    .state(FileState.ACCEPTED)
+                    .hash(data.getHash())
+                    .build());
 
-
-            //TODO: Add entry in DB for file with state as ACCEPTED and send event
-            //TODO: Send event about file acceptance
-
-            List<DataEntry> dataEntries = getRows(data);
-
+            //TODO: Handle header row
+            List<DataEntry> dataEntries = getRows(data.getContent());
             List<DataEntry> validEntries = dataEntries.stream()
                     .map(this::validateRow)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            //TODO: Update file state in DB to PARSED and send event
+            savedData = updateEntryInDbAndSendEvent(savedData, FileState.PROCESSING);
 
             List<KafkaMessage> messages = validEntries.stream()
                     .map(entry -> KafkaMessage.builder()
@@ -65,7 +58,7 @@ public class FileDataExecutor implements DataExecutor {
                     .collect(Collectors.toList());
             kafkaProducer.push(messages);
 
-            //TODO: Update file state in DB to CONSUMED and send event
+            updateEntryInDbAndSendEvent(savedData, FileState.PROCESSED);
         } catch (Exception ex) {
             log.warn("Hit exception : {}", ex.getMessage());
         }
@@ -102,4 +95,18 @@ public class FileDataExecutor implements DataExecutor {
                 .collect(Collectors.toList());
     }
 
+    private FileData saveEntryInDbAndSendEvent(FileData data) {
+        Optional<FileData> savedData = dbCommand.save(data);
+
+        //TODO: Send event based on error check
+        return savedData.get();
+    }
+
+    private FileData updateEntryInDbAndSendEvent(FileData data, FileState state) {
+        data.setState(state);
+        Optional<FileData> savedData = dbCommand.update(data);
+
+        //TODO: Send event based on error check
+        return savedData.get();
+    }
 }

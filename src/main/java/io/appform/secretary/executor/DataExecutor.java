@@ -1,9 +1,8 @@
 package io.appform.secretary.executor;
 
-import java.io.InputStream;
+import io.appform.secretary.model.InputFileData;
 
 public interface DataExecutor {
 
-    //TODO: Update workflow to enum
-    void processFile(InputStream dataStream, String filename, String workflow, String userId);
+    void processFile(InputFileData data);
 }

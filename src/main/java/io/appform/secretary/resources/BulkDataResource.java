@@ -1,9 +1,13 @@
 package io.appform.secretary.resources;
 
 import io.appform.secretary.executor.DataExecutor;
+import io.appform.secretary.model.InputFileData;
+import io.appform.secretary.utils.CommonUtils;
+import io.appform.secretary.validator.FileInputValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.hibernate.validator.constraints.NotBlank;
@@ -18,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
+import java.util.Optional;
 
 @Slf4j
 @Path("/v1/data")
@@ -27,6 +32,7 @@ import java.io.InputStream;
 public class BulkDataResource {
 
     private final DataExecutor executor;
+    private final FileInputValidator validator;
 
     //TODO: Fix compatibility issue between Swagger and Dropwizard Forms
     @POST
@@ -36,13 +42,29 @@ public class BulkDataResource {
     @SneakyThrows
     public Response processDataFile(@Valid @NotNull @FormDataParam("file") InputStream fileStream,
                                     @Valid @NotNull @FormDataParam("file") FormDataContentDisposition fileMetaData,
-                                    @Valid @NotBlank @FormDataParam("user") String userId,
+                                    @Valid @NotBlank @FormDataParam("user") String user,
                                     @Valid @NotBlank @FormDataParam("flow") String workflow) {
-        log.info("Request: Upload filename : {} workflowId: {} userId: {}",
-                fileMetaData.getName(), workflow, userId);
+        log.info("Request: Upload filename : {} workflow: {} user: {}",
+                fileMetaData.getFileName(), workflow, user);
 
-        //TODO: Convert input to object using validator; perfom sanity check on workflow and file hashsum
-        executor.processFile(fileStream, fileMetaData.getFileName(), workflow, userId);
+        InputFileData data = InputFileData.builder()
+                .file(fileMetaData.getFileName())
+                .content(IOUtils.toByteArray(fileStream))
+                .user(user)
+                .workflow(workflow)
+                .build();
+        data.setHash(CommonUtils.getHash(data.getContent()));
+        log.info("Converted request to data object");
+
+        Optional<String> validationFailure = validator.isValid(data);
+        if (validationFailure.isPresent()) {
+            log.error("Bad request: {}", validationFailure.get());
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(validationFailure.get())
+                    .build();
+        }
+
+        executor.processFile(data);
 
         log.info("Response: Successfully processed file: {}", fileMetaData.getName());
         return Response.ok().build();
