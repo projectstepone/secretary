@@ -31,7 +31,6 @@ public class WorkflowDBCommand implements WorkflowProvider{
         this.cache = Caffeine.newBuilder()
                 .maximumSize(1_000)
                 .expireAfterWrite(300, TimeUnit.SECONDS)
-                .refreshAfterWrite(60, TimeUnit.SECONDS)
                 .build(key -> {
                     log.debug("Loading data for file for key: {}", key);
                     return getFromDb(key);
@@ -42,6 +41,7 @@ public class WorkflowDBCommand implements WorkflowProvider{
     public Optional<Workflow> save(Workflow workflow) {
         try {
             Optional<StoredWorkflow> savedWorkflow = lookupDao.save(WorkflowUtils.toDao(workflow));
+            savedWorkflow.ifPresent(storedWorkflow -> cache.refresh(storedWorkflow.getName()));
             return savedWorkflow.map(WorkflowUtils::toDto);
         } catch (Exception ex) {
             log.warn("Unable to save entry: {}. Exception: {}", workflow, ex.getMessage());
@@ -89,7 +89,12 @@ public class WorkflowDBCommand implements WorkflowProvider{
                 entry.ifPresent(storedWorkflow -> storedWorkflow.setEnabled(workflow.isEnabled()));
                 return entry.orElse(null);
             });
-            return updated ? getFromDb(workflow.getName()): Optional.empty();
+            if (updated) {
+                cache.refresh(workflow.getName());
+                return getFromDb(workflow.getName());
+            } else {
+                return Optional.empty();
+            }
         } catch (Exception ex) {
             log.warn("Unable to update entry: {}. Exception: {}", workflow, ex.getMessage());
             return Optional.empty();

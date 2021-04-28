@@ -11,11 +11,11 @@ public interface FileDataProvider {
 
     public List<FileData> getAll();
 
-    public List<FileData> getByHashValue(String hashValue);
+    public Optional<FileData> getByHashValue(String hashValue);
 
     public List<FileData> getByUser(String hashValue);
 
-    public void save(FileData fileData);
+    public Optional<FileData> save(FileData fileData);
 
     public Optional<FileData> update(FileData fileData);
 

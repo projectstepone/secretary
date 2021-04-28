@@ -33,7 +33,6 @@ public class FileDataDBCommand implements FileDataProvider {
         cache = Caffeine.newBuilder()
                 .maximumSize(1_000)
                 .expireAfterWrite(300, TimeUnit.SECONDS)
-                .refreshAfterWrite(60, TimeUnit.SECONDS)
                 .build(key -> {
                     log.debug("Loading data for file for key: {}", key);
                     return getFromDb(key);
@@ -42,13 +41,15 @@ public class FileDataDBCommand implements FileDataProvider {
 
 
     @Override
-    public void save(FileData fileData) {
+    public Optional<FileData> save(FileData fileData) {
         try {
-            String uuid = createUuid();
-            fileData.setUuid(uuid);
-            lookupDao.save(FileDataUtils.toDao(fileData));
+            fileData.setUuid(createUuid());
+            Optional<StoredFileData> savedData = lookupDao.save(FileDataUtils.toDao(fileData));
+            savedData.ifPresent(data -> cache.refresh(data.getUuid()));
+            return savedData.map(FileDataUtils::toDto);
         } catch (Exception ex) {
             log.warn("Unable to save entry: {}. Exception: {}", fileData, ex.getMessage());
+            return Optional.empty();
         }
     }
 
@@ -59,7 +60,12 @@ public class FileDataDBCommand implements FileDataProvider {
                 entry.ifPresent(file -> file.setState(fileData.getState().getValue()));
                 return entry.orElse(null);
             });
-            return updated ? getFromDb(fileData.getUuid()): Optional.empty();
+            if (updated) {
+                cache.refresh(fileData.getUuid());
+                return getFromDb(fileData.getUuid());
+            } else {
+                return Optional.empty();
+            }
         } catch (Exception ex) {
             log.warn("Unable to update entry: {}. Exception: {}", fileData, ex.getMessage());
             return Optional.empty();
@@ -100,17 +106,17 @@ public class FileDataDBCommand implements FileDataProvider {
     }
 
     @Override
-    public List<FileData> getByHashValue(String hashValue) {
+    public Optional<FileData> getByHashValue(String hashValue) {
         try {
             return lookupDao.scatterGather(
                     DetachedCriteria.forClass(StoredFileData.class)
                             .add(Restrictions.eq("hash", hashValue)))
                     .stream()
                     .map(FileDataUtils::toDto)
-                    .collect(Collectors.toList());
+                    .findFirst();
         } catch (Exception ex) {
             log.warn("Unable to find entry for hash value: {}. Exception: {}", hashValue, ex.getMessage());
-            return Collections.emptyList();
+            return Optional.empty();
         }
     }
 
