@@ -1,6 +1,9 @@
 package io.appform.secretary.server.resources;
 
+import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.Workflow;
+import io.appform.secretary.model.exception.ResponseCode;
+import io.appform.secretary.model.exception.SecretaryError;
 import io.appform.secretary.model.workflow.WorkflowCreateRequest;
 import io.appform.secretary.model.workflow.WorkflowUpdateRequest;
 import io.appform.secretary.server.command.WorkflowProvider;
@@ -36,8 +39,8 @@ public class WorkflowResource {
 
         Optional<Workflow> getWorkflow = dbCommand.get(request.getWorkflow());
         if (getWorkflow.isPresent()) {
-            log.error("Workflow entry for {} is already present", request.getWorkflow());
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            throw new SecretaryError("Workflow is already present: " + request.getWorkflow(),
+                    ResponseCode.BAD_REQUEST);
         }
 
         Optional<Workflow> optionalWorkflow = dbCommand.save(Workflow.builder()
@@ -46,13 +49,18 @@ public class WorkflowResource {
                 .build());
 
         if (!optionalWorkflow.isPresent()) {
-            //TODO: Raise appropriate exception
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            throw new SecretaryError("Unable to create workflow: " + request.getWorkflow(),
+                    ResponseCode.INTERNAL_SERVER_ERROR);
         }
 
         Workflow workflow = optionalWorkflow.get();
         log.info("Response: Created workflow: {}", workflow);
-        return Response.ok().entity(workflow).build();
+        return Response.ok()
+                .entity(GenericResponse.builder()
+                        .success(true)
+                        .data(workflow)
+                        .build())
+                .build();
     }
 
     @PUT
@@ -63,8 +71,8 @@ public class WorkflowResource {
 
         Optional<Workflow> getWorkflow = dbCommand.get(request.getWorkflow());
         if (!getWorkflow.isPresent()) {
-            log.error("Workflow entry for {} is not present", request.getWorkflow());
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new SecretaryError("Workflow is not present: " + request.getWorkflow(),
+                    ResponseCode.NOT_FOUND);
         }
 
         // Possible TICTOU issue
@@ -74,13 +82,18 @@ public class WorkflowResource {
                 .build());
 
         if (!updateWorkflow.isPresent()) {
-            //TODO: Raise appropriate exception
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            throw new SecretaryError("Unable to update workflow: " + request.getWorkflow(),
+                ResponseCode.NOT_FOUND);
         }
 
         Workflow workflow = updateWorkflow.get();
         log.info("Response: Updated workflow: {}", workflow);
-        return Response.ok().entity(workflow).build();
+        return Response.ok()
+                .entity(GenericResponse.builder()
+                        .success(true)
+                        .data(workflow)
+                        .build())
+                .build();
     }
 
 }

@@ -22,7 +22,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
-import java.util.Optional;
 
 @Slf4j
 @Path("/v1/data")
@@ -56,14 +55,7 @@ public class BulkDataResource {
         data.setHash(CommonUtils.getHash(data.getContent()));
         log.info("Converted request to data object");
 
-        Optional<String> validationFailure = validator.isValid(data);
-        if (validationFailure.isPresent()) {
-            log.error("Bad request: {}", validationFailure.get());
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(validationFailure.get())
-                    .build();
-        }
-
+        validator.isValid(data);
         executor.processFile(data);
 
         log.info("Response: Successfully processed file: {}", fileMetaData.getName());

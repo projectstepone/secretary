@@ -1,7 +1,10 @@
 package io.appform.secretary.server.resources;
 
 import io.appform.secretary.model.FileData;
+import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.Workflow;
+import io.appform.secretary.model.exception.ResponseCode;
+import io.appform.secretary.model.exception.SecretaryError;
 import io.appform.secretary.server.command.FileDataDBCommand;
 import io.appform.secretary.server.command.WorkflowDBCommand;
 import io.swagger.annotations.Api;
@@ -42,7 +45,12 @@ public class HousekeepingResource {
         List<FileData> data = filedataCommand.getByUser(userId);
 
         log.info("Response: List of files uploaded by user {}: {}", userId, data);
-        return Response.ok().entity(data).build();
+        return Response.ok()
+                .entity(GenericResponse.builder()
+                        .success(true)
+                        .data(data)
+                        .build())
+                .build();
     }
 
     @GET
@@ -54,11 +62,17 @@ public class HousekeepingResource {
         Optional<Workflow> data = workflowCommand.get(workflowId);
 
         if (!data.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new SecretaryError("Workflow is not present: " + workflowId,
+                    ResponseCode.NOT_FOUND);
         }
 
         log.info("Response: Workflow details {}", data);
-        return Response.ok().entity(data).build();
+        return Response.ok()
+                .entity(GenericResponse.builder()
+                        .success(true)
+                        .data(data)
+                        .build())
+                .build();
     }
 
     @GET
@@ -75,6 +89,11 @@ public class HousekeepingResource {
         }
 
         log.info("Response: List of workflow: {}", data);
-        return Response.ok().entity(data).build();
+        return Response.ok()
+                .entity(GenericResponse.builder()
+                        .success(true)
+                        .data(data)
+                        .build())
+                .build();
     }
 }

@@ -2,6 +2,8 @@ package io.appform.secretary.server.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.appform.secretary.model.exception.ResponseCode;
+import io.appform.secretary.model.exception.SecretaryError;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +30,7 @@ public class MapperUtils {
         return deserialize(objectMapper, data, typeReference);
     }
 
-    public static byte[] serialize(ObjectMapper mapper, Object data) throws Exception {
+    public static byte[] serialize(ObjectMapper mapper, Object data) {
         try {
             if (data == null) {
                 return new byte[0];
@@ -36,13 +38,12 @@ public class MapperUtils {
             return mapper.writeValueAsBytes(data);
         } catch (Exception ex) {
             log.error("Error in serialization: {}", ex.getMessage());
-            //TODO : Add proper exceptions
-            throw new Exception("Something went wrong");
+            throw SecretaryError.propagate(ex, ResponseCode.JSON_ERROR);
         }
     }
 
     @Nullable
-    public static <T> T deserialize(ObjectMapper mapper, byte[] data, TypeReference<T> typeReference) throws Exception {
+    public static <T> T deserialize(ObjectMapper mapper, byte[] data, TypeReference<T> typeReference) {
         try {
             if (data == null) {
                 return null;
@@ -50,8 +51,7 @@ public class MapperUtils {
             return mapper.readValue(data, typeReference);
         } catch (Exception ex) {
             log.error("Error in deserialization: {}", ex.getMessage());
-            //TODO : Add proper exceptions
-            throw new Exception("Something went wrong");
+            throw SecretaryError.propagate(ex, ResponseCode.JSON_ERROR);
         }
     }
 }

@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface WorkflowProvider {
 
-    public Optional<Workflow> save(Workflow workflow);
+    Optional<Workflow> save(Workflow workflow);
 
-    public Optional<Workflow> get(String name);
+    Optional<Workflow> get(String name);
 
-    public List<Workflow> getAll();
+    List<Workflow> getAll();
 
-    public Optional<Workflow> update(Workflow workflow);
+    Optional<Workflow> update(Workflow workflow);
 }

@@ -13,7 +13,7 @@ public class GenericExceptionMapper implements ExceptionMapper<RuntimeException>
     @Override
     public Response toResponse(RuntimeException ex) {
         //TODO: Add event for exception
-        log.error("Error occurred:", ex);
+        log.error("Exception occurred: {}", ex.getMessage());
 
         if (ex instanceof SecretaryError) {
             final SecretaryError error = (SecretaryError) ex;

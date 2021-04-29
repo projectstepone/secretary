@@ -7,16 +7,16 @@ import java.util.Optional;
 
 public interface FileDataProvider {
 
-    public Optional<FileData> get(String uuid);
+    Optional<FileData> get(String uuid);
 
-    public List<FileData> getAll();
+    List<FileData> getAll();
 
-    public Optional<FileData> getByHashValue(String hashValue);
+    Optional<FileData> getByHashValue(String hashValue);
 
-    public List<FileData> getByUser(String hashValue);
+    List<FileData> getByUser(String hashValue);
 
-    public Optional<FileData> save(FileData fileData);
+    Optional<FileData> save(FileData fileData);
 
-    public Optional<FileData> update(FileData fileData);
+    Optional<FileData> update(FileData fileData);
 
 }
