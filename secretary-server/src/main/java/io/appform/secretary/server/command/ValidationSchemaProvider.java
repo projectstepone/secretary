@@ -1,6 +1,6 @@
 package io.appform.secretary.server.command;
 
-import io.appform.secretary.server.model.ValidationSchema;
+import io.appform.secretary.model.ValidationSchema;
 
 import java.util.List;
 import java.util.Optional;

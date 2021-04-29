@@ -1,13 +1,13 @@
 package io.appform.secretary.server.executor;
 
 import com.google.inject.Singleton;
+import io.appform.secretary.model.FileData;
+import io.appform.secretary.model.state.FileState;
 import io.appform.secretary.server.command.FileDataDBCommand;
 import io.appform.secretary.server.command.KafkaProducerCommand;
-import io.appform.secretary.server.model.DataEntry;
-import io.appform.secretary.server.model.FileData;
-import io.appform.secretary.server.model.InputFileData;
-import io.appform.secretary.server.model.KafkaMessage;
-import io.appform.secretary.server.model.state.FileState;
+import io.appform.secretary.server.internal.model.DataEntry;
+import io.appform.secretary.server.internal.model.InputFileData;
+import io.appform.secretary.server.internal.model.KafkaMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

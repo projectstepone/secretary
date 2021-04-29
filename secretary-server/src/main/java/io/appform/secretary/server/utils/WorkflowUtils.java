@@ -1,7 +1,7 @@
 package io.appform.secretary.server.utils;
 
+import io.appform.secretary.model.Workflow;
 import io.appform.secretary.server.dao.StoredWorkflow;
-import io.appform.secretary.server.model.Workflow;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

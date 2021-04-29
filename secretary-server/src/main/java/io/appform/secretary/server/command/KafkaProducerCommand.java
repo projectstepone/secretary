@@ -1,6 +1,6 @@
 package io.appform.secretary.server.command;
 
-import io.appform.secretary.server.model.KafkaMessage;
+import io.appform.secretary.server.internal.model.KafkaMessage;
 import io.dropwizard.lifecycle.Managed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

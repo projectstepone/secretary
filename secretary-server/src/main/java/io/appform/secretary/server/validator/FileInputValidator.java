@@ -1,9 +1,9 @@
 package io.appform.secretary.server.validator;
 
+import io.appform.secretary.model.Workflow;
 import io.appform.secretary.server.command.FileDataProvider;
 import io.appform.secretary.server.command.WorkflowProvider;
-import io.appform.secretary.server.model.InputFileData;
-import io.appform.secretary.server.model.Workflow;
+import io.appform.secretary.server.internal.model.InputFileData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

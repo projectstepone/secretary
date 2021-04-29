@@ -1,8 +1,8 @@
 package io.appform.secretary.server.command;
 
 import io.appform.dropwizard.sharding.dao.LookupDao;
+import io.appform.secretary.model.ValidationSchema;
 import io.appform.secretary.server.dao.StoredValidationSchema;
-import io.appform.secretary.server.model.ValidationSchema;
 import io.appform.secretary.server.utils.MapperUtils;
 import io.appform.secretary.server.utils.ValidationSchemaUtils;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package io.appform.secretary.server.resources;
 
 import io.appform.secretary.server.executor.DataExecutor;
-import io.appform.secretary.server.model.InputFileData;
+import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.utils.CommonUtils;
 import io.appform.secretary.server.validator.FileInputValidator;
 import lombok.RequiredArgsConstructor;

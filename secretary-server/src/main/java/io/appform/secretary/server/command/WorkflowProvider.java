@@ -1,6 +1,6 @@
 package io.appform.secretary.server.command;
 
-import io.appform.secretary.server.model.Workflow;
+import io.appform.secretary.model.Workflow;
 
 import java.util.List;
 import java.util.Optional;

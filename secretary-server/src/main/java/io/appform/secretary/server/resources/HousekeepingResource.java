@@ -1,9 +1,9 @@
 package io.appform.secretary.server.resources;
 
+import io.appform.secretary.model.FileData;
+import io.appform.secretary.model.Workflow;
 import io.appform.secretary.server.command.FileDataDBCommand;
 import io.appform.secretary.server.command.WorkflowDBCommand;
-import io.appform.secretary.server.model.FileData;
-import io.appform.secretary.server.model.Workflow;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

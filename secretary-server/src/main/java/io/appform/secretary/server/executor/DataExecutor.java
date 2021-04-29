@@ -1,6 +1,6 @@
 package io.appform.secretary.server.executor;
 
-import io.appform.secretary.server.model.InputFileData;
+import io.appform.secretary.server.internal.model.InputFileData;
 
 public interface DataExecutor {
 

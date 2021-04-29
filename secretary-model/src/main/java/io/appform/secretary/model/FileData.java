@@ -1,6 +1,6 @@
-package io.appform.secretary.server.model;
+package io.appform.secretary.model;
 
-import io.appform.secretary.server.model.state.FileState;
+import io.appform.secretary.model.state.FileState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

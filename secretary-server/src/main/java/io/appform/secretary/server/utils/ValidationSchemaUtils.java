@@ -1,10 +1,10 @@
 package io.appform.secretary.server.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import io.appform.secretary.model.ValidationSchema;
+import io.appform.secretary.model.validationschema.NewSchemaRequest;
+import io.appform.secretary.model.validationschema.UpdateSchemaRequest;
 import io.appform.secretary.server.dao.StoredValidationSchema;
-import io.appform.secretary.server.model.ValidationSchema;
-import io.appform.secretary.server.model.validationschema.NewSchemaRequest;
-import io.appform.secretary.server.model.validationschema.UpdateSchemaRequest;
 import lombok.experimental.UtilityClass;
 
 import java.util.UUID;

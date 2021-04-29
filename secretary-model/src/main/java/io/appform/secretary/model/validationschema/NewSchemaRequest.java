@@ -1,10 +1,9 @@
-package io.appform.secretary.server.model.validationschema;
+package io.appform.secretary.model.validationschema;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.Valid;

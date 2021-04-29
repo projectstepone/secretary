@@ -1,4 +1,4 @@
-package io.appform.secretary.server.model.configuration;
+package io.appform.secretary.model.configuration;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

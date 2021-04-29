@@ -15,6 +15,19 @@
 
     <artifactId>secretary-server</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.appform</groupId>
+            <artifactId>secretary-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.appform</groupId>
+            <artifactId>secretary-publisher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

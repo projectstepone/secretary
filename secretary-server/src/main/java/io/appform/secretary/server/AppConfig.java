@@ -2,7 +2,7 @@ package io.appform.secretary.server;
 
 
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
-import io.appform.secretary.server.model.configuration.KafkaProducerConfiguration;
+import io.appform.secretary.model.configuration.KafkaProducerConfiguration;
 import io.dropwizard.Configuration;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import lombok.AllArgsConstructor;

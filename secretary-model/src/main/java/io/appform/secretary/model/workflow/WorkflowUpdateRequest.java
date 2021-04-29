@@ -1,4 +1,4 @@
-package io.appform.secretary.server.model.validationschema;
+package io.appform.secretary.model.workflow;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,15 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.Valid;
-
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class UpdateSchemaRequest {
+@NoArgsConstructor
+public class WorkflowUpdateRequest {
 
-    @Valid
     @NotBlank
-    private String schema;
+    private String workflow;
+    private boolean enabled;
 }

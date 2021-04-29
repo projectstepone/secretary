@@ -1,9 +1,9 @@
 package io.appform.secretary.server.resources;
 
+import io.appform.secretary.model.Workflow;
+import io.appform.secretary.model.workflow.WorkflowCreateRequest;
+import io.appform.secretary.model.workflow.WorkflowUpdateRequest;
 import io.appform.secretary.server.command.WorkflowProvider;
-import io.appform.secretary.server.model.Workflow;
-import io.appform.secretary.server.model.workflow.WorkflowCreateRequest;
-import io.appform.secretary.server.model.workflow.WorkflowUpdateRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;

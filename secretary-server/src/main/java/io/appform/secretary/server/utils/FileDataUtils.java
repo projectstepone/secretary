@@ -1,8 +1,8 @@
 package io.appform.secretary.server.utils;
 
+import io.appform.secretary.model.FileData;
+import io.appform.secretary.model.state.FileState;
 import io.appform.secretary.server.dao.StoredFileData;
-import io.appform.secretary.server.model.FileData;
-import io.appform.secretary.server.model.state.FileState;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
