@@ -73,6 +73,7 @@ public class BulkDataResource {
         validator.isValid(data);
         executor.processFile(data);
 
+        //TODO: Pass UUID for file in response
         log.info("Response: Successfully processed file: {}", fileMetaData.getName());
         return Response.ok().build();
     }
@@ -93,7 +94,7 @@ public class BulkDataResource {
         } else {
             List<RawDataEntry> data = rowDataProvider.getByFileId(fileId);
             output = String.format("File: %s; Processed: %s/%s",
-                    file.get().getName(), data.size(), file.get().getHash());
+                    file.get().getName(), data.size(), file.get().getCount());
         }
 
         log.info("Output: {}", output);

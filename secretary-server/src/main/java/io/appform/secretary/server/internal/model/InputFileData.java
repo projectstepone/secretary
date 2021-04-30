@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class InputFileData {
 
     private String file;
+    private String uuid;
     private byte[] content;
     private String workflow;
     private String user;

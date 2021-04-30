@@ -39,45 +39,67 @@ public class FileDataExecutor implements DataExecutor {
     private final FileRowDataProvider rowDataProvider;
 
     @Override
-    public void processFile(InputFileData data) {
+    public void processFile(InputFileData inputData) {
         try {
-            var savedData = saveEntryInDbAndSendEvent(FileData.builder()
-                    .name(data.getFile())
-                    .workflow(data.getWorkflow())
-                    .user(data.getUser())
+            var data = FileData.builder()
+                    .name(inputData.getFile())
+                    .workflow(inputData.getWorkflow())
+                    .user(inputData.getUser())
                     .state(FileState.ACCEPTED)
-                    .hash(data.getHash())
-                    .build());
+                    .hash(inputData.getHash())
+                    .build();
 
-            val dataEntries = getRows(savedData.getUuid(), data.getContent());
-            val validEntries = dataEntries.stream()
-                    .map(this::validateRow)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+            if (!inputData.isRetry()) {
+                data = saveEntryInDbAndSendEvent(data);
+            } else {
+                data.setUuid(inputData.getUuid());
+            }
 
-            savedData.setCount(validEntries.size());
-            savedData = updateEntryInDbAndSendEvent(savedData, FileState.PROCESSING);
+            val validEntries = getValidEntries(data, inputData);
+            log.info("File {} has {} valid entries", data.getName(), validEntries.size());
 
-            val messages = validEntries.stream()
-                    .filter(entry -> {
-                        Optional<RawDataEntry> newData = rowDataProvider.save(entry);
-                        return newData.isPresent();
-                    })
-                    .map(entry -> KafkaMessage.builder()
-                            .topic(KAFKA_TOPIC_FILEDATA_INGESTION)
-                            .key(UUID.randomUUID().toString())
-                            .value(entry.getData().toString())
-                            .build())
-                    .collect(Collectors.toList());
-            kafkaProducer.push(messages);
+            if (!inputData.isRetry()) {
+                data = updateEntryInDbAndSendEvent(data, FileState.PROCESSING);
+            }
 
-            val entries = rowDataProvider.getByFileId(savedData.getUuid());
-            if (savedData.getCount() == entries.size()) {
-                updateEntryInDbAndSendEvent(savedData, FileState.PROCESSED);
+            ingestInKafka(validEntries);
+
+            val entries = rowDataProvider.getByFileId(data.getUuid());
+            if (data.getCount() == entries.size()) {
+                updateEntryInDbAndSendEvent(data, FileState.PROCESSED);
             }
         } catch (Exception ex) {
             log.warn("Hit exception : {}", ex.getMessage());
         }
+    }
+
+    private void ingestInKafka(List<RawDataEntry> entries) {
+        //TODO: Move save to DB just before push to Kafka client for every entry
+        val messages = entries.stream()
+                .filter(entry -> {
+                    Optional<RawDataEntry> newData = rowDataProvider.save(entry);
+                    return newData.isPresent();
+                })
+                .map(entry -> KafkaMessage.builder()
+                        .topic(KAFKA_TOPIC_FILEDATA_INGESTION)
+                        .key(UUID.randomUUID().toString())
+                        .value(entry.getData().toString())
+                        .build())
+                .collect(Collectors.toList());
+        kafkaProducer.push(messages);
+
+        log.info("Ingested {} entries", messages.size());
+    }
+
+    private List<RawDataEntry> getValidEntries(FileData file, InputFileData input) {
+        val dataEntries = getRows(file.getUuid(), input.getContent());
+        val validEntries = dataEntries.stream()
+                .map(this::validateRow)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        file.setCount(validEntries.size());
+        return validEntries;
     }
 
     private RawDataEntry validateRow(RawDataEntry entry) {

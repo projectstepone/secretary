@@ -34,10 +34,13 @@ public class FileInputValidator implements Validator<InputFileData> {
                     ResponseCode.BAD_REQUEST);
         }
 
-        //TODO: Handle file which isn't fully processed
         val data = fileDataDBCommand.getByHashValue(input.getHash());
-        if(data.isPresent()) {
+        if(!data.isPresent()) {
+            return true;
+        } else {
             input.setRetry(true);
+            input.setUuid(data.get().getUuid());
+            //TODO: Add time limit to skip processing old files
             if (data.get().getState().isProcessed()) {
                 throw new SecretaryError("File is already processed. File hash: " + input.getHash(),
                         ResponseCode.BAD_REQUEST);
