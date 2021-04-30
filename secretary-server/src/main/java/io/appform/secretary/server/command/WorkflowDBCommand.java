@@ -32,7 +32,7 @@ public class WorkflowDBCommand implements WorkflowProvider{
                 .maximumSize(1_000)
                 .expireAfterWrite(300, TimeUnit.SECONDS)
                 .build(key -> {
-                    log.debug("Loading data for file for key: {}", key);
+                    log.debug("Loading data for workflow : {}", key);
                     return getFromDb(key);
                 });
     }

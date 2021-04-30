@@ -36,3 +36,32 @@ CREATE TABLE `workflow` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uniq_workflow_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `transient_raw_data` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `partition_id` int(11) NOT NULL DEFAULT 1,
+    `file_id` varchar(64) NOT NULL,
+    `file_index` bigint(20) DEFAULT 1,
+    `lookup_key` varchar(64) NOT NULL,
+    `created` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+    `updated` datetime(3) NOT NULL DEFAULT current_timestamp(3) ON UPDATE current_timestamp(3),
+    PRIMARY KEY (`id`,`partition_id`),
+    UNIQUE KEY `uniq_file_entry` (`file_id`, `file_index`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+PARTITION BY RANGE (`partition_id`)
+(PARTITION `p0` VALUES LESS THAN (1) ENGINE = InnoDB,
+ PARTITION `p1` VALUES LESS THAN (2) ENGINE = InnoDB,
+ PARTITION `p2` VALUES LESS THAN (3) ENGINE = InnoDB,
+ PARTITION `p3` VALUES LESS THAN (4) ENGINE = InnoDB,
+ PARTITION `p4` VALUES LESS THAN (5) ENGINE = InnoDB,
+ PARTITION `p5` VALUES LESS THAN (6) ENGINE = InnoDB,
+ PARTITION `p6` VALUES LESS THAN (7) ENGINE = InnoDB,
+ PARTITION `p7` VALUES LESS THAN (8) ENGINE = InnoDB,
+ PARTITION `p8` VALUES LESS THAN (9) ENGINE = InnoDB,
+ PARTITION `p9` VALUES LESS THAN (10) ENGINE = InnoDB,
+ PARTITION `p10` VALUES LESS THAN (11) ENGINE = InnoDB,
+ PARTITION `p11` VALUES LESS THAN (12) ENGINE = InnoDB,
+ PARTITION `p12` VALUES LESS THAN (13) ENGINE = InnoDB,
+ PARTITION `p13` VALUES LESS THAN (14) ENGINE = InnoDB,
+ PARTITION `p14` VALUES LESS THAN (15) ENGINE = InnoDB,
+ PARTITION `p15` VALUES LESS THAN MAXVALUE ENGINE = InnoDB);

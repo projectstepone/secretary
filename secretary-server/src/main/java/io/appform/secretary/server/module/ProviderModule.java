@@ -3,6 +3,8 @@ package io.appform.secretary.server.module;
 import com.google.inject.AbstractModule;
 import io.appform.secretary.server.command.FileDataDBCommand;
 import io.appform.secretary.server.command.FileDataProvider;
+import io.appform.secretary.server.command.FileRowDataDBCommand;
+import io.appform.secretary.server.command.FileRowDataProvider;
 import io.appform.secretary.server.command.WorkflowDBCommand;
 import io.appform.secretary.server.command.WorkflowProvider;
 import io.appform.secretary.server.executor.DataExecutor;
@@ -15,5 +17,6 @@ public class ProviderModule extends AbstractModule {
         bind(WorkflowProvider.class).to(WorkflowDBCommand.class);
         bind(DataExecutor.class).to(FileDataExecutor.class);
         bind(FileDataProvider.class).to(FileDataDBCommand.class);
+        bind(FileRowDataProvider.class).to(FileRowDataDBCommand.class);
     }
 }

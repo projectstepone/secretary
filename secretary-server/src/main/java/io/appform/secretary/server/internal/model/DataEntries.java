@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DataEntry {
+public class DataEntries {
     private List<String> entryList;
 }

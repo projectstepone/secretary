@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.dao.LookupDao;
 import io.appform.secretary.server.dao.StoredFileData;
+import io.appform.secretary.server.dao.StoredFileRowMetadata;
 import io.appform.secretary.server.dao.StoredValidationSchema;
 import io.appform.secretary.server.dao.StoredWorkflow;
 
@@ -33,5 +34,11 @@ public class DBModule extends AbstractModule {
     @Provides
     public LookupDao<StoredWorkflow> providerStoredWorkflowLookupDao() {
         return dbBundle.createParentObjectDao(StoredWorkflow.class);
+    }
+
+    @Singleton
+    @Provides
+    public LookupDao<StoredFileRowMetadata> providerStoredFileRowMetadataLookupDao() {
+        return dbBundle.createParentObjectDao(StoredFileRowMetadata.class);
     }
 }

@@ -5,7 +5,7 @@ import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.state.FileState;
 import io.appform.secretary.server.command.FileDataDBCommand;
 import io.appform.secretary.server.command.KafkaProducerCommand;
-import io.appform.secretary.server.internal.model.DataEntry;
+import io.appform.secretary.server.internal.model.DataEntries;
 import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.internal.model.KafkaMessage;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +41,8 @@ public class FileDataExecutor implements DataExecutor {
                     .build());
 
             //TODO: Handle header row
-            List<DataEntry> dataEntries = getRows(data.getContent());
-            List<DataEntry> validEntries = dataEntries.stream()
+            List<DataEntries> dataEntries = getRows(data.getContent());
+            List<DataEntries> validEntries = dataEntries.stream()
                     .map(this::validateRow)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
@@ -64,7 +64,7 @@ public class FileDataExecutor implements DataExecutor {
         }
     }
 
-    private DataEntry validateRow(DataEntry entry) {
+    private DataEntries validateRow(DataEntries entry) {
         if (Objects.isNull(entry)) {
             return null;
         }
@@ -80,9 +80,9 @@ public class FileDataExecutor implements DataExecutor {
 
     }
 
-    private List<DataEntry> getRows(byte[] data) {
+    private List<DataEntries> getRows(byte[] data) {
         return Arrays.stream(new String(data, StandardCharsets.UTF_8).split("\n"))
-                .map(entry -> DataEntry.builder()
+                .map(entry -> DataEntries.builder()
                         .entryList(getTokens(entry))
                         .build())
                 .collect(Collectors.toList());
