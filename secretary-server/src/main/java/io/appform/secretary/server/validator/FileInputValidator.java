@@ -1,5 +1,6 @@
 package io.appform.secretary.server.validator;
 
+import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.Workflow;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
@@ -36,9 +37,13 @@ public class FileInputValidator implements Validator<InputFileData> {
         }
 
         //TODO: Handle file which isn't fully processed
-        if(fileDataDBCommand.getByHashValue(input.getHash()).isPresent()) {
-            throw new SecretaryError("Duplicate file entry with hash: " + input.getHash(),
-                    ResponseCode.BAD_REQUEST);
+        Optional<FileData> data = fileDataDBCommand.getByHashValue(input.getHash());
+        if(data.isPresent()) {
+            input.setRetry(true);
+            if (data.get().getState().isProcessed()) {
+                throw new SecretaryError("File is already processed. File hash: " + input.getHash(),
+                        ResponseCode.BAD_REQUEST);
+            }
         }
 
         return true;

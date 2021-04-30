@@ -16,6 +16,7 @@ CREATE TABLE `file_data` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `uuid` varchar(64) NOT NULL,
     `name` varchar(64) NOT NULL,
+    `count` bigint(20) NOT NULL DEFAULT 0,
     `hashsum` varchar(128) NOT NULL,
     `state` varchar(32) NOT NULL,
     `user` varchar(64) NOT NULL,
@@ -46,7 +47,7 @@ CREATE TABLE `transient_raw_data` (
     `created` datetime(3) NOT NULL DEFAULT current_timestamp(3),
     `updated` datetime(3) NOT NULL DEFAULT current_timestamp(3) ON UPDATE current_timestamp(3),
     PRIMARY KEY (`id`,`partition_id`),
-    UNIQUE KEY `uniq_file_entry` (`file_id`, `file_index`)
+    UNIQUE KEY `uniq_lookup_key_partition_id` (`lookup_key`, `partition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 PARTITION BY RANGE (`partition_id`)
 (PARTITION `p0` VALUES LESS THAN (1) ENGINE = InnoDB,

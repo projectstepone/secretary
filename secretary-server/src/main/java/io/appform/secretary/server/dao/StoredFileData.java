@@ -41,6 +41,9 @@ public class StoredFileData {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "count")
+    private long entryCount;
+
     @Column(name = "hashsum")
     private String hash;
 

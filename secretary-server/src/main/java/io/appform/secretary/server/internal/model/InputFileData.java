@@ -16,4 +16,5 @@ public class InputFileData {
     private String workflow;
     private String user;
     private String hash;
+    private boolean retry;
 }
