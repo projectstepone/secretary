@@ -15,7 +15,7 @@ public class FileDataUtils{
                 .name(dao.getName())
                 .hash(dao.getHash())
                 .workflow(dao.getWorkflow())
-                .entryCount(dao.getEntryCount())
+                .count(dao.getEntryCount())
                 .state(FileState.get(dao.getState()))
                 .build();
     }
@@ -27,7 +27,7 @@ public class FileDataUtils{
                 .hash(dto.getHash())
                 .state(dto.getState().getValue())
                 .user(dto.getUser())
-                .entryCount(dto.getEntryCount())
+                .entryCount(dto.getCount())
                 .workflow(dto.getWorkflow())
                 .build();
     }

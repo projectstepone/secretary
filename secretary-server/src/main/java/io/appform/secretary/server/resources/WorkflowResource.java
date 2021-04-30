@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -20,7 +21,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Optional;
 
 @Slf4j
 @Path("/v1/workflow")
@@ -37,13 +37,13 @@ public class WorkflowResource {
     public Response createWorkflow(@Valid WorkflowCreateRequest request) {
         log.info("Request: Create workflow: {}", request);
 
-        Optional<Workflow> getWorkflow = dbCommand.get(request.getWorkflow());
+        val getWorkflow = dbCommand.get(request.getWorkflow());
         if (getWorkflow.isPresent()) {
             throw new SecretaryError("Workflow is already present: " + request.getWorkflow(),
                     ResponseCode.BAD_REQUEST);
         }
 
-        Optional<Workflow> optionalWorkflow = dbCommand.save(Workflow.builder()
+        val optionalWorkflow = dbCommand.save(Workflow.builder()
                 .name(request.getWorkflow())
                 .enabled(true)
                 .build());
@@ -53,7 +53,7 @@ public class WorkflowResource {
                     ResponseCode.INTERNAL_SERVER_ERROR);
         }
 
-        Workflow workflow = optionalWorkflow.get();
+        val workflow = optionalWorkflow.get();
         log.info("Response: Created workflow: {}", workflow);
         return Response.ok()
                 .entity(GenericResponse.builder()
@@ -69,14 +69,14 @@ public class WorkflowResource {
     public Response updateWorkflow(@Valid WorkflowUpdateRequest request) {
         log.info("Request: Update workflow: {}", request);
 
-        Optional<Workflow> getWorkflow = dbCommand.get(request.getWorkflow());
+        val getWorkflow = dbCommand.get(request.getWorkflow());
         if (!getWorkflow.isPresent()) {
             throw new SecretaryError("Workflow is not present: " + request.getWorkflow(),
                     ResponseCode.NOT_FOUND);
         }
 
         // Possible TICTOU issue
-        Optional<Workflow> updateWorkflow = dbCommand.update(Workflow.builder()
+        val updateWorkflow = dbCommand.update(Workflow.builder()
                 .name(request.getWorkflow())
                 .enabled(request.isEnabled())
                 .build());
@@ -86,7 +86,7 @@ public class WorkflowResource {
                 ResponseCode.NOT_FOUND);
         }
 
-        Workflow workflow = updateWorkflow.get();
+        val workflow = updateWorkflow.get();
         log.info("Response: Updated workflow: {}", workflow);
         return Response.ok()
                 .entity(GenericResponse.builder()

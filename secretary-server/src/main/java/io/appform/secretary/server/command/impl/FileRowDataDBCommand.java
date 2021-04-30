@@ -1,12 +1,14 @@
-package io.appform.secretary.server.command;
+package io.appform.secretary.server.command.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.appform.dropwizard.sharding.dao.LookupDao;
 import io.appform.secretary.model.RawDataEntry;
+import io.appform.secretary.server.command.FileRowDataProvider;
 import io.appform.secretary.server.dao.StoredFileRowMetadata;
 import io.appform.secretary.server.utils.RawDataUtils;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -40,7 +42,7 @@ public class FileRowDataDBCommand implements FileRowDataProvider {
 
     private Optional<RawDataEntry> getFromDb(String key) {
         try {
-            Optional<StoredFileRowMetadata> optional = lookupDao.get(key);
+            val optional = lookupDao.get(key);
             return optional.map(RawDataUtils::toDto);
         } catch (Exception ex) {
             log.warn("Unable to find entry for key: {}. Exception: {}", key, ex.getMessage());
@@ -75,7 +77,7 @@ public class FileRowDataDBCommand implements FileRowDataProvider {
     @Override
     public Optional<RawDataEntry> save(RawDataEntry entry) {
         try {
-            Optional<StoredFileRowMetadata> savedData = lookupDao.save(RawDataUtils.toDao(entry));
+            val savedData = lookupDao.save(RawDataUtils.toDao(entry));
             savedData.ifPresent(data -> cache.refresh(data.getKey()));
             return savedData.map(RawDataUtils::toDto);
         } catch (Exception ex) {

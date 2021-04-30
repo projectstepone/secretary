@@ -11,10 +11,11 @@ import io.appform.secretary.server.executor.DataExecutor;
 import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.utils.CommonUtils;
 import io.appform.secretary.server.validator.FileInputValidator;
-import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import lombok.var;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -33,10 +34,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import static org.reflections.util.ConfigurationBuilder.build;
 
 @Slf4j
 @Path("/v1/data")
@@ -63,7 +61,7 @@ public class BulkDataResource {
         log.info("Request: Upload filename : {} workflow: {} user: {}",
                 fileMetaData.getFileName(), workflow, user);
 
-        InputFileData data = InputFileData.builder()
+        val data = InputFileData.builder()
                 .file(fileMetaData.getFileName())
                 .content(IOUtils.toByteArray(fileStream))
                 .user(user)
@@ -89,7 +87,7 @@ public class BulkDataResource {
             throw new SecretaryError("Invalid file ID: " + fileId, ResponseCode.BAD_REQUEST);
         }
 
-        String output;
+        var output = "";
         if (file.get().getState().isProcessed()) {
             output = "File processing is complete";
         } else {

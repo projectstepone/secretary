@@ -1,12 +1,15 @@
-package io.appform.secretary.server.command;
+package io.appform.secretary.server.command.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.appform.dropwizard.sharding.dao.LookupDao;
 import io.appform.secretary.model.FileData;
+import io.appform.secretary.server.command.FileDataProvider;
 import io.appform.secretary.server.dao.StoredFileData;
 import io.appform.secretary.server.utils.FileDataUtils;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import lombok.var;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -44,7 +47,7 @@ public class FileDataDBCommand implements FileDataProvider {
     public Optional<FileData> save(FileData fileData) {
         try {
             fileData.setUuid(createUuid());
-            Optional<StoredFileData> savedData = lookupDao.save(FileDataUtils.toDao(fileData));
+            val savedData = lookupDao.save(FileDataUtils.toDao(fileData));
             savedData.ifPresent(data -> cache.refresh(data.getUuid()));
             return savedData.map(FileDataUtils::toDto);
         } catch (Exception ex) {
@@ -56,10 +59,10 @@ public class FileDataDBCommand implements FileDataProvider {
     @Override
     public Optional<FileData> update(FileData fileData) {
         try {
-            boolean updated = lookupDao.update(fileData.getUuid(), entry -> {
+            val updated = lookupDao.update(fileData.getUuid(), entry -> {
                 entry.ifPresent(file -> {
                     file.setState(fileData.getState().getValue());
-                    file.setEntryCount(fileData.getEntryCount());
+                    file.setEntryCount(fileData.getCount());
                 });
                 return entry.orElse(null);
             });
@@ -100,7 +103,7 @@ public class FileDataDBCommand implements FileDataProvider {
 
     public Optional<FileData> getFromDb(String uuid) {
         try {
-            Optional<StoredFileData> optional = lookupDao.get(uuid);
+            val optional = lookupDao.get(uuid);
             return optional.map(FileDataUtils::toDto);
         } catch (Exception ex) {
             log.warn("Unable to find entry for uuid: {}. Exception: {}", uuid, ex.getMessage());
@@ -139,7 +142,7 @@ public class FileDataDBCommand implements FileDataProvider {
     }
 
     private String createUuid() {
-        String uuid = generateUuid();
+        var uuid = generateUuid();
 
         while (get(uuid).isPresent()) {
             uuid = generateUuid();

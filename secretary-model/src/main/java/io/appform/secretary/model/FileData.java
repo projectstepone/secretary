@@ -16,6 +16,6 @@ public class FileData {
     private String user;
     private String workflow;
     private String hash;
-    private long entryCount;
+    private long count;
     private FileState state;
 }

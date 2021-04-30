@@ -1,12 +1,14 @@
-package io.appform.secretary.server.command;
+package io.appform.secretary.server.command.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.appform.dropwizard.sharding.dao.LookupDao;
 import io.appform.secretary.model.Workflow;
+import io.appform.secretary.server.command.WorkflowProvider;
 import io.appform.secretary.server.dao.StoredWorkflow;
 import io.appform.secretary.server.utils.WorkflowUtils;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.hibernate.criterion.DetachedCriteria;
 
 import javax.inject.Inject;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Singleton
-public class WorkflowDBCommand implements WorkflowProvider{
+public class WorkflowDBCommand implements WorkflowProvider {
 
     private final LookupDao<StoredWorkflow> lookupDao;
     private final LoadingCache<String, Optional<Workflow>> cache;
@@ -40,7 +42,7 @@ public class WorkflowDBCommand implements WorkflowProvider{
     @Override
     public Optional<Workflow> save(Workflow workflow) {
         try {
-            Optional<StoredWorkflow> savedWorkflow = lookupDao.save(WorkflowUtils.toDao(workflow));
+            val savedWorkflow = lookupDao.save(WorkflowUtils.toDao(workflow));
             savedWorkflow.ifPresent(storedWorkflow -> cache.refresh(storedWorkflow.getName()));
             return savedWorkflow.map(WorkflowUtils::toDto);
         } catch (Exception ex) {
@@ -51,7 +53,7 @@ public class WorkflowDBCommand implements WorkflowProvider{
 
     public Optional<Workflow> getFromDb(String name) {
         try {
-            Optional<StoredWorkflow> optional = lookupDao.get(name);
+            val optional = lookupDao.get(name);
             return optional.map(WorkflowUtils::toDto);
         } catch (Exception ex) {
             log.warn("Unable to find entry for uuid: {}. Exception: {}", name, ex.getMessage());
@@ -85,7 +87,7 @@ public class WorkflowDBCommand implements WorkflowProvider{
     @Override
     public Optional<Workflow> update(Workflow workflow) {
         try {
-            boolean updated = lookupDao.update(workflow.getName(), entry -> {
+            val updated = lookupDao.update(workflow.getName(), entry -> {
                 entry.ifPresent(storedWorkflow -> storedWorkflow.setEnabled(workflow.isEnabled()));
                 return entry.orElse(null);
             });

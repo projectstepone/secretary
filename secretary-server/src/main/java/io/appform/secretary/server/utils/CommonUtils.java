@@ -2,6 +2,7 @@ package io.appform.secretary.server.utils;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import lombok.val;
 import org.apache.commons.codec.binary.Hex;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -16,8 +17,8 @@ public class CommonUtils {
 
     @SneakyThrows
     public String getHash(byte[] data) {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] hashBytes = md.digest(data);
+        val md = MessageDigest.getInstance("SHA-256");
+        val hashBytes = md.digest(data);
         return Hex.encodeHexString(hashBytes);
     }
 
@@ -26,7 +27,7 @@ public class CommonUtils {
     }
 
     public String getKey(@Valid @NotBlank String id, long index) {
-        return id + SEPARATOR + Long.toString(index);
+        return id + SEPARATOR + index;
     }
 
 }

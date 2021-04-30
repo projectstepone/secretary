@@ -4,15 +4,16 @@ import com.google.inject.Singleton;
 import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.RawDataEntry;
 import io.appform.secretary.model.state.FileState;
-import io.appform.secretary.server.command.FileDataDBCommand;
 import io.appform.secretary.server.command.FileRowDataProvider;
 import io.appform.secretary.server.command.KafkaProducerCommand;
-import io.appform.secretary.server.internal.model.DataEntries;
+import io.appform.secretary.server.command.impl.FileDataDBCommand;
 import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.internal.model.KafkaMessage;
 import io.appform.secretary.server.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import lombok.var;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +30,9 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class FileDataExecutor implements DataExecutor {
 
-    private static final int HEADER_ROW_COUNT = 1;
+    private static final String ENTRY_SEPARATOR = ",";
+    private static final String LINE_SEPARATOR = "\n";
+
     private static final String KAFKA_TOPIC_FILEDATA_INGESTION = "secretary.filedata.random";
     private final KafkaProducerCommand kafkaProducer;
     private final FileDataDBCommand dbCommand;
@@ -38,7 +41,7 @@ public class FileDataExecutor implements DataExecutor {
     @Override
     public void processFile(InputFileData data) {
         try {
-            FileData savedData = saveEntryInDbAndSendEvent(FileData.builder()
+            var savedData = saveEntryInDbAndSendEvent(FileData.builder()
                     .name(data.getFile())
                     .workflow(data.getWorkflow())
                     .user(data.getUser())
@@ -46,16 +49,16 @@ public class FileDataExecutor implements DataExecutor {
                     .hash(data.getHash())
                     .build());
 
-            List<RawDataEntry> dataEntries = getRows(savedData.getUuid(), data.getContent());
-            List<RawDataEntry> validEntries = dataEntries.stream()
+            val dataEntries = getRows(savedData.getUuid(), data.getContent());
+            val validEntries = dataEntries.stream()
                     .map(this::validateRow)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            savedData.setEntryCount(validEntries.size());
+            savedData.setCount(validEntries.size());
             savedData = updateEntryInDbAndSendEvent(savedData, FileState.PROCESSING);
 
-            List<KafkaMessage> messages = validEntries.stream()
+            val messages = validEntries.stream()
                     .filter(entry -> {
                         Optional<RawDataEntry> newData = rowDataProvider.save(entry);
                         return newData.isPresent();
@@ -68,8 +71,8 @@ public class FileDataExecutor implements DataExecutor {
                     .collect(Collectors.toList());
             kafkaProducer.push(messages);
 
-            List<RawDataEntry> entries = rowDataProvider.getByFileId(savedData.getUuid());
-            if (savedData.getEntryCount() == entries.size()) {
+            val entries = rowDataProvider.getByFileId(savedData.getUuid());
+            if (savedData.getCount() == entries.size()) {
                 updateEntryInDbAndSendEvent(savedData, FileState.PROCESSED);
             }
         } catch (Exception ex) {
@@ -82,7 +85,7 @@ public class FileDataExecutor implements DataExecutor {
             return null;
         }
 
-        boolean emptyValues = entry.getData().stream()
+        val emptyValues = entry.getData().stream()
                 .anyMatch(String::isEmpty);
         if (emptyValues) {
             return null;
@@ -93,11 +96,12 @@ public class FileDataExecutor implements DataExecutor {
 
     }
 
-    //TODO: Handle header row
-    //TODO: Use final variables for string literals
     private List<RawDataEntry> getRows(String fileId, byte[] data) {
-        String[] splitData = new String(data, StandardCharsets.UTF_8).split("\n");
-        return IntStream.range(1, splitData.length)
+        val splitData = new String(data, StandardCharsets.UTF_8).split(LINE_SEPARATOR);
+
+        // Skipping header row
+        val startIndex = 1;
+        return IntStream.range(startIndex, splitData.length)
                 .mapToObj(val -> RawDataEntry.builder()
                         .data(getTokens(splitData[val]))
                         .fileIndex(val)
@@ -109,14 +113,14 @@ public class FileDataExecutor implements DataExecutor {
 
     //TODO: Use final variables for string literals
     private List<String> getTokens(String input) {
-        return Arrays.stream(input.split(","))
+        return Arrays.stream(input.split(ENTRY_SEPARATOR))
                 .map(String::trim)
                 .map(entry -> entry.replace(" ", "_"))
                 .collect(Collectors.toList());
     }
 
     private FileData saveEntryInDbAndSendEvent(FileData data) {
-        Optional<FileData> savedData = dbCommand.save(data);
+        val savedData = dbCommand.save(data);
 
         //TODO: Send event based on error check
         return savedData.get();
@@ -124,7 +128,7 @@ public class FileDataExecutor implements DataExecutor {
 
     private FileData updateEntryInDbAndSendEvent(FileData data, FileState state) {
         data.setState(state);
-        Optional<FileData> savedData = dbCommand.update(data);
+        val savedData = dbCommand.update(data);
 
         //TODO: Send event based on error check
         return savedData.get();

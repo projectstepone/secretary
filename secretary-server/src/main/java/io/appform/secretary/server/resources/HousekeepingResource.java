@@ -1,16 +1,17 @@
 package io.appform.secretary.server.resources;
 
-import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.Workflow;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
-import io.appform.secretary.server.command.FileDataDBCommand;
-import io.appform.secretary.server.command.WorkflowDBCommand;
+import io.appform.secretary.server.command.impl.FileDataDBCommand;
+import io.appform.secretary.server.command.impl.WorkflowDBCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import lombok.var;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.inject.Inject;
@@ -22,8 +23,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,7 +41,7 @@ public class HousekeepingResource {
     public Response getFilesByUser(@Valid @NotBlank @PathParam("userId") String userId) {
         log.info("Request: List files uploaded by user: {}", userId);
 
-        List<FileData> data = filedataCommand.getByUser(userId);
+        val data = filedataCommand.getByUser(userId);
 
         log.info("Response: List of files uploaded by user {}: {}", userId, data);
         return Response.ok()
@@ -59,7 +58,7 @@ public class HousekeepingResource {
     public Response getWorkflow(@Valid @NotBlank @PathParam("workflowId") String workflowId) {
         log.info("Request: Details for workflow: {}", workflowId);
 
-        Optional<Workflow> data = workflowCommand.get(workflowId);
+        val data = workflowCommand.get(workflowId);
 
         if (!data.isPresent()) {
             throw new SecretaryError("Workflow is not present: " + workflowId,
@@ -81,7 +80,7 @@ public class HousekeepingResource {
     public Response getAllWorkflow(@QueryParam("active") boolean active) {
         log.info("Request: Get detail for all workflow");
 
-        List<Workflow> data = workflowCommand.getAll();
+        var data = workflowCommand.getAll();
         if (active) {
             data = data.stream()
                     .filter(Workflow::isEnabled)

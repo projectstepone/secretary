@@ -3,7 +3,7 @@ package io.appform.secretary.server.resources;
 import io.appform.secretary.model.ValidationSchema;
 import io.appform.secretary.model.validationschema.NewSchemaRequest;
 import io.appform.secretary.model.validationschema.UpdateSchemaRequest;
-import io.appform.secretary.server.command.ValidationSchemaDBCommand;
+import io.appform.secretary.server.command.impl.ValidationSchemaDBCommand;
 import io.appform.secretary.server.utils.ValidationSchemaUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

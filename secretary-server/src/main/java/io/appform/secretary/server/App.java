@@ -21,6 +21,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import lombok.val;
 import ru.vyarus.dropwizard.guice.GuiceBundle;
 
 public class App extends Application<AppConfig> {
@@ -41,11 +42,11 @@ public class App extends Application<AppConfig> {
                         new EnvironmentVariableSubstitutor(false))
         );
 
-        ObjectMapper mapper = bootstrap.getObjectMapper();
+        val mapper = bootstrap.getObjectMapper();
         setMapperProperties(mapper);
         MapperUtils.initialize(mapper);
 
-        final DBShardingBundle<AppConfig> dbBundle = getDBShardingBundle();
+        val dbBundle = getDBShardingBundle();
 
         bootstrap.addBundle(dbBundle);
         bootstrap.addBundle(getGuiceBundle(dbBundle));
