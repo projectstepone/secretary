@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-            <mainClass>io.appform.secretary.server.App</mainClass>
+        <mainClass>io.appform.secretary.server.App</mainClass>
     </properties>
 
     <artifactId>secretary-server</artifactId>
@@ -25,6 +25,11 @@
             <groupId>io.appform</groupId>
             <artifactId>secretary-publisher</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-views-mustache</artifactId>
+            <version>${dropwizard.version}</version>
         </dependency>
     </dependencies>
 

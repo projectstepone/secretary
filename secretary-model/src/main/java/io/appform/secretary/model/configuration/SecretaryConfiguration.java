@@ -14,4 +14,10 @@ public class SecretaryConfiguration {
 
     @NotBlank
     private String kafkaTopic;
+
+    @NotBlank
+    private String serviceBaseUrl;
+
+    @NotBlank
+    private String fileUploadPath;
 }

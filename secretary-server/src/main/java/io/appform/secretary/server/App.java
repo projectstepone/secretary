@@ -19,6 +19,7 @@ import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.views.ViewBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import lombok.val;
@@ -52,6 +53,7 @@ public class App extends Application<AppConfig> {
         bootstrap.addBundle(getGuiceBundle(dbBundle));
         bootstrap.addBundle(getSwaggerBundle());
         bootstrap.addBundle(new MultiPartBundle());
+        bootstrap.addBundle(new ViewBundle<>());
     }
 
     @Override

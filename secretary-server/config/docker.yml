@@ -24,6 +24,8 @@ logging:
 
 secretaryConfig:
   kafkaTopic: secretary.filedata.random
+  serviceBaseUrl: http://localhost:8080
+  fileUploadPath: /secretary/v1/data/file/upload
 
 shards:
   shards:
