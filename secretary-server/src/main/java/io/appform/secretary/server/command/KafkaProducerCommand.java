@@ -27,14 +27,12 @@ public class KafkaProducerCommand implements Managed {
         );
     }
 
-    public void push(List<KafkaMessage> messages) {
-        messages.forEach(message -> {
-            try {
-                pushMessage(message);
-            } catch (Exception ex) {
-                log.warn("Failed to send message {}", message);
-            }
-        });
+    public void push(KafkaMessage message) {
+        try {
+            pushMessage(message);
+        } catch (Exception ex) {
+            log.warn("Failed to send message {}", message);
+        }
     }
 
     @Override

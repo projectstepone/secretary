@@ -20,8 +20,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -74,21 +74,22 @@ public class FileDataExecutor implements DataExecutor {
     }
 
     private void ingestInKafka(List<RawDataEntry> entries) {
-        //TODO: Move save to DB just before push to Kafka client for every entry
-        val messages = entries.stream()
-                .filter(entry -> {
-                    Optional<RawDataEntry> newData = rowDataProvider.save(entry);
-                    return newData.isPresent();
-                })
-                .map(entry -> KafkaMessage.builder()
+        var count = new AtomicInteger(0);
+        entries.forEach(entry -> {
+            //TODO: Add cache to ease load on DB
+            val savedData = rowDataProvider.save(entry);
+            if (savedData.isPresent()) {
+                val message = KafkaMessage.builder()
                         .topic(KAFKA_TOPIC_FILEDATA_INGESTION)
                         .key(UUID.randomUUID().toString())
                         .value(entry.getData().toString())
-                        .build())
-                .collect(Collectors.toList());
-        kafkaProducer.push(messages);
+                        .build();
+                kafkaProducer.push(message);
+                count.getAndIncrement();
+            }
+        });
 
-        log.info("Ingested {} entries", messages.size());
+        log.info("Ingested {} entries", count.get());
     }
 
     private List<RawDataEntry> getValidEntries(FileData file, InputFileData input) {
