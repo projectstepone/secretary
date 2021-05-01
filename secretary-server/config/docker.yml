@@ -22,6 +22,9 @@ logging:
       timeZone: IST
       logFormat: "%(%-5level) [%date] %X{TRACE-ID} [%thread] [%logger{0}]: %message%n"
 
+secretaryConfig:
+  kafkaTopic: secretary.filedata.random
+
 shards:
   shards:
     - driverClass: org.mariadb.jdbc.Driver

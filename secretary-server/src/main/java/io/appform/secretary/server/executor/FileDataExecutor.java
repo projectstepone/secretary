@@ -3,6 +3,7 @@ package io.appform.secretary.server.executor;
 import com.google.inject.Singleton;
 import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.RawDataEntry;
+import io.appform.secretary.model.configuration.SecretaryConfiguration;
 import io.appform.secretary.model.state.FileState;
 import io.appform.secretary.server.command.FileRowDataProvider;
 import io.appform.secretary.server.command.KafkaProducerCommand;
@@ -34,6 +35,7 @@ public class FileDataExecutor implements DataExecutor {
     private static final String LINE_SEPARATOR = "\n";
 
     private static final String KAFKA_TOPIC_FILEDATA_INGESTION = "secretary.filedata.random";
+    private final SecretaryConfiguration serviceConfig;
     private final KafkaProducerCommand kafkaProducer;
     private final FileDataDBCommand dbCommand;
     private final FileRowDataProvider rowDataProvider;
@@ -80,7 +82,7 @@ public class FileDataExecutor implements DataExecutor {
             val savedData = rowDataProvider.save(entry);
             if (savedData.isPresent()) {
                 val message = KafkaMessage.builder()
-                        .topic(KAFKA_TOPIC_FILEDATA_INGESTION)
+                        .topic(serviceConfig.getKafkaTopic())
                         .key(UUID.randomUUID().toString())
                         .value(entry.getData().toString())
                         .build();
