@@ -1,20 +1,23 @@
-package io.appform.secretary.model;
+package io.appform.secretary.server.internal.model;
 
+import io.appform.secretary.model.schema.ValidationSchema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ValidationSchema {
+public class Schema {
 
     private String uuid;
     private String name;
-    private int version;
+    private String description;
     private boolean active;
-    //TODO : Use a concrete implementation instead of object
-    private Object schema;
+    private List<ValidationSchema> schema;
+
 }

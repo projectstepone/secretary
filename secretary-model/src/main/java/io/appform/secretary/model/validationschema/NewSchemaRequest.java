@@ -1,5 +1,6 @@
 package io.appform.secretary.model.validationschema;
 
+import io.appform.secretary.model.schema.ValidationSchema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,5 +23,9 @@ public class NewSchemaRequest {
 
     @Valid
     @NotBlank
-    private String schema;
+    private String description;
+
+    @Valid
+    @NotNull
+    private List<ValidationSchema> schema;
 }

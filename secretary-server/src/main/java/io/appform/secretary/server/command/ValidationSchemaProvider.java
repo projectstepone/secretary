@@ -1,19 +1,17 @@
 package io.appform.secretary.server.command;
 
-import io.appform.secretary.model.ValidationSchema;
+import io.appform.secretary.server.internal.model.Schema;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ValidationSchemaProvider {
 
-    Optional<ValidationSchema> createSchema(ValidationSchema schema);
+    Optional<Schema> save(Schema schema);
 
-    Optional<ValidationSchema> updateSchema(ValidationSchema schema);
+    Optional<Schema> update(Schema schema);
 
-    Optional<ValidationSchema> getSchema(String uuid);
+    Optional<Schema> get(String uuid);
 
-    List<ValidationSchema> getAllSchema();
-
-    Optional<ValidationSchema> disableSchema(String uuid);
+    List<Schema> getAll();
 }
