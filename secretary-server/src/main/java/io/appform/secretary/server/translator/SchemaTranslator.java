@@ -17,8 +17,9 @@ public class SchemaTranslator {
                 .uuid(dao.getUuid())
                 .name(dao.getName())
                 .description(dao.getDescription())
+                .tag(dao.getTag())
                 .active(dao.isActive())
-                .schema(MapperUtils.deserialize(dao.getValidators(),
+                .schemas(MapperUtils.deserialize(dao.getValidators(),
                         new TypeReference<List<ValidationSchema>>() {}))
                 .build();
     }
@@ -28,8 +29,9 @@ public class SchemaTranslator {
                 .uuid(dto.getUuid())
                 .name(dto.getName())
                 .description(dto.getDescription())
+                .tag(dto.getTag())
                 .active(dto.isActive())
-                .validators(MapperUtils.serialize(dto.getSchema()))
+                .validators(MapperUtils.serialize(dto.getSchemas()))
                 .build();
     }
 

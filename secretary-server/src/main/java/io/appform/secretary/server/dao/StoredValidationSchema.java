@@ -44,6 +44,9 @@ public class StoredValidationSchema {
         @Column(name = "description")
         private String description;
 
+        @Column(name = "tag")
+        private String tag;
+
         @Column(name = "active")
         private boolean active;
 

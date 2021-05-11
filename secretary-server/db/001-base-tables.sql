@@ -3,6 +3,7 @@ CREATE TABLE `validation_schema` (
     `uuid` varchar(64) DEFAULT NULL,
     `active` bit(1) NOT NULL DEFAULT 0,
     `name` varchar(64) NOT NULL,
+    `tag` varchar(64) NOT NULL,
     `description` varchar(255) NOT NULL,
     `data` blob DEFAULT NULL,
     `created` datetime(3) NOT NULL DEFAULT current_timestamp(3),

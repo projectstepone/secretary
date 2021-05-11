@@ -26,6 +26,10 @@ public class NewSchemaRequest {
     private String description;
 
     @Valid
+    @NotBlank
+    private String tag;
+
+    @Valid
     @NotNull
     private List<ValidationSchema> schema;
 }

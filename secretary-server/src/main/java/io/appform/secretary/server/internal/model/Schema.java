@@ -17,7 +17,8 @@ public class Schema {
     private String uuid;
     private String name;
     private String description;
+    private String tag;
     private boolean active;
-    private List<ValidationSchema> schema;
+    private List<ValidationSchema> schemas;
 
 }

@@ -18,7 +18,7 @@ public class ListValidationSchema extends ValidationSchema {
     private List<String> values;
 
     @Builder
-    public ListValidationSchema(String tag, List<String> values) {
+    public ListValidationSchema(List<String> values, String tag) {
         super(ValidationType.VALIDATION_LIST, tag);
         this.values = values;
     }

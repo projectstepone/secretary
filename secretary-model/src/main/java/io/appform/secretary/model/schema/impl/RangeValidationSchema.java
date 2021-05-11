@@ -17,7 +17,7 @@ public class RangeValidationSchema extends ValidationSchema {
     private String end;
 
     @Builder
-    public RangeValidationSchema(String tag, String start, String end) {
+    public RangeValidationSchema(String start, String end, String tag) {
         super(ValidationType.VALIDATION_RANGE, tag);
         this.start = start;
         this.end = end;

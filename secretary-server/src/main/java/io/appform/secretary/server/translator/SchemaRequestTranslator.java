@@ -15,14 +15,15 @@ public class SchemaRequestTranslator {
                 .active(true)
                 .name(request.getName())
                 .description(request.getDescription())
-                .schema(request.getSchema())
+                .tag(request.getTag())
+                .schemas(request.getSchema())
                 .build();
     }
 
     public Schema updateSchema(UpdateSchemaRequest request, Schema schema) {
         schema.setActive(request.isValid());
         if (!Objects.isNull(request.getSchema())) {
-            schema.setSchema(request.getSchema());
+            schema.setSchemas(request.getSchema());
         }
         return schema;
     }

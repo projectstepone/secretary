@@ -39,12 +39,12 @@ public class FileDataExecutor implements DataExecutor {
     private static final String ENTRY_SEPARATOR = ",";
     private static final String LINE_SEPARATOR = "\n";
 
-    private static final String KAFKA_TOPIC_FILEDATA_INGESTION = "secretary.filedata.random";
     private final SecretaryConfiguration serviceConfig;
     private final KafkaProducerCommand kafkaProducer;
     private final FileDataDBCommand dbCommand;
     private final FileRowDataProvider rowDataProvider;
     private final FileSchemaProvider fileSchemaProvider;
+    private final ValidationExecutor validationExecutor;
 
     @Override
     public void processFile(InputFileData inputData) {
@@ -129,8 +129,7 @@ public class FileDataExecutor implements DataExecutor {
     }
 
     private boolean validateEntry(Schema schema, String entry) {
-        //TODO: Add validation check
-        return true;
+        return validationExecutor.validate(schema, entry);
     }
 
     private boolean isFalse(boolean bool) {
@@ -145,16 +144,22 @@ public class FileDataExecutor implements DataExecutor {
         val emptyValues = entry.getData().stream()
                 .anyMatch(String::isEmpty);
         if (emptyValues) {
+            log.warn("Empty string detected : {}", entry);
             return null;
         }
 
-        if (schema.getSchema().size() != entry.getData().size()) {
+        val schemaSize = schema.getSchema().size();
+        val dataSize = entry.getData().size();
+        if (schemaSize != dataSize) {
+            log.warn("Schema and data mismatch : Schema entries {} Data entries: {}", schemaSize, dataSize);
             return null;
         }
 
         val invalid = IntStream.range(0, schema.getSchema().size())
                 .mapToObj(index -> validateEntry(schema.getSchema().get(index), entry.getData().get(index)))
                 .anyMatch(this::isFalse);
+
+        //TODO: Convert row to key-value pair
         return invalid ? null : entry;
     }
 
