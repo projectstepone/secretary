@@ -6,10 +6,13 @@ import io.appform.secretary.model.RawDataEntry;
 import io.appform.secretary.model.configuration.SecretaryConfiguration;
 import io.appform.secretary.model.state.FileState;
 import io.appform.secretary.server.command.FileRowDataProvider;
+import io.appform.secretary.server.command.FileSchemaProvider;
 import io.appform.secretary.server.command.KafkaProducerCommand;
 import io.appform.secretary.server.command.impl.FileDataDBCommand;
+import io.appform.secretary.server.internal.model.FileSchema;
 import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.internal.model.KafkaMessage;
+import io.appform.secretary.server.internal.model.Schema;
 import io.appform.secretary.server.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +22,10 @@ import lombok.var;
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -39,6 +44,7 @@ public class FileDataExecutor implements DataExecutor {
     private final KafkaProducerCommand kafkaProducer;
     private final FileDataDBCommand dbCommand;
     private final FileRowDataProvider rowDataProvider;
+    private final FileSchemaProvider fileSchemaProvider;
 
     @Override
     public void processFile(InputFileData inputData) {
@@ -59,6 +65,12 @@ public class FileDataExecutor implements DataExecutor {
 
             val validEntries = getValidEntries(data, inputData);
             log.info("File {} has {} valid entries", data.getName(), validEntries.size());
+
+            if (validEntries.size() == 0) {
+                data = updateEntryInDbAndSendEvent(data, FileState.SKIPPED);
+                log.warn("File has no valid entries: {}", data.getUuid());
+                return;
+            }
 
             if (!inputData.isRetry()) {
                 data = updateEntryInDbAndSendEvent(data, FileState.PROCESSING);
@@ -94,10 +106,21 @@ public class FileDataExecutor implements DataExecutor {
         log.info("Ingested {} entries", count.get());
     }
 
+    private FileSchema getFileSchema(String workflow) {
+        val schema = fileSchemaProvider.get(workflow);
+        return schema.orElse(null);
+    }
+
     private List<RawDataEntry> getValidEntries(FileData file, InputFileData input) {
+        val fileSchema = getFileSchema(file.getWorkflow());
+        if (Objects.isNull(fileSchema)) {
+            log.warn("Unable to find file schema for workflow: {}", file.getWorkflow());
+            return Collections.emptyList();
+        }
+
         val dataEntries = getRows(file.getUuid(), input.getContent());
         val validEntries = dataEntries.stream()
-                .map(this::validateRow)
+                .map(entry -> validateRow(entry, fileSchema))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
@@ -105,7 +128,16 @@ public class FileDataExecutor implements DataExecutor {
         return validEntries;
     }
 
-    private RawDataEntry validateRow(RawDataEntry entry) {
+    private boolean validateEntry(Schema schema, String entry) {
+        //TODO: Add validation check
+        return true;
+    }
+
+    private boolean isFalse(boolean bool) {
+        return !bool;
+    }
+
+    private RawDataEntry validateRow(RawDataEntry entry, FileSchema schema) {
         if (Objects.isNull(entry)) {
             return null;
         }
@@ -116,9 +148,14 @@ public class FileDataExecutor implements DataExecutor {
             return null;
         }
 
-        //TODO: Add schema validation
-        return entry;
+        if (schema.getSchema().size() != entry.getData().size()) {
+            return null;
+        }
 
+        val invalid = IntStream.range(0, schema.getSchema().size())
+                .mapToObj(index -> validateEntry(schema.getSchema().get(index), entry.getData().get(index)))
+                .anyMatch(this::isFalse);
+        return invalid ? null : entry;
     }
 
     private List<RawDataEntry> getRows(String fileId, byte[] data) {
