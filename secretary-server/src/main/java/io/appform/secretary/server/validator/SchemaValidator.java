@@ -1,7 +1,7 @@
 package io.appform.secretary.server.validator;
 
 import com.google.inject.Singleton;
-import io.appform.secretary.model.validationschema.NewSchemaRequest;
+import io.appform.secretary.model.schema.request.NewSchemaRequest;
 import io.appform.secretary.server.command.ValidationSchemaProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

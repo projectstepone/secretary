@@ -1,4 +1,4 @@
-package io.appform.secretary.server.internal.model;
+package io.appform.secretary.model.schema;
 
 import io.appform.secretary.model.schema.ValidationSchema;
 import lombok.AllArgsConstructor;

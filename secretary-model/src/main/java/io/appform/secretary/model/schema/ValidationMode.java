@@ -1,4 +1,4 @@
-package io.appform.secretary.server.internal.model;
+package io.appform.secretary.model.schema;
 
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;

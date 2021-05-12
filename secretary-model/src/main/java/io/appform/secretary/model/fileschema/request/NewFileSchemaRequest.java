@@ -1,4 +1,4 @@
-package io.appform.secretary.model.validationschema;
+package io.appform.secretary.model.fileschema.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

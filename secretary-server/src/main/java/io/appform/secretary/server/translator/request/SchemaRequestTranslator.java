@@ -1,8 +1,8 @@
-package io.appform.secretary.server.translator;
+package io.appform.secretary.server.translator.request;
 
-import io.appform.secretary.model.validationschema.NewSchemaRequest;
-import io.appform.secretary.model.validationschema.UpdateSchemaRequest;
-import io.appform.secretary.server.internal.model.Schema;
+import io.appform.secretary.model.schema.request.NewSchemaRequest;
+import io.appform.secretary.model.schema.request.UpdateSchemaRequest;
+import io.appform.secretary.model.schema.Schema;
 import lombok.experimental.UtilityClass;
 
 import java.util.Objects;

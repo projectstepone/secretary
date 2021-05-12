@@ -1,13 +1,13 @@
-package io.appform.secretary.server.translator;
+package io.appform.secretary.server.translator.request;
 
 import com.google.inject.Singleton;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
-import io.appform.secretary.model.validationschema.NewFileSchemaRequest;
+import io.appform.secretary.model.fileschema.request.NewFileSchemaRequest;
 import io.appform.secretary.server.command.ValidationSchemaProvider;
 import io.appform.secretary.server.command.WorkflowProvider;
-import io.appform.secretary.server.internal.model.FileSchema;
-import io.appform.secretary.server.internal.model.Schema;
+import io.appform.secretary.model.fileschema.FileSchema;
+import io.appform.secretary.model.schema.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 

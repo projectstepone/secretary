@@ -1,6 +1,6 @@
 package io.appform.secretary.server.command;
 
-import io.appform.secretary.server.internal.model.Schema;
+import io.appform.secretary.model.schema.Schema;
 
 import java.util.List;
 import java.util.Optional;

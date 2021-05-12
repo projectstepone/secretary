@@ -1,6 +1,7 @@
-package io.appform.secretary.server.internal.model;
+package io.appform.secretary.model.fileschema;
 
 import io.appform.secretary.model.Workflow;
+import io.appform.secretary.model.schema.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

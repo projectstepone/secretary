@@ -1,9 +1,9 @@
-package io.appform.secretary.server.translator;
+package io.appform.secretary.server.translator.data;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.appform.secretary.model.schema.ValidationSchema;
 import io.appform.secretary.server.dao.StoredValidationSchema;
-import io.appform.secretary.server.internal.model.Schema;
+import io.appform.secretary.model.schema.Schema;
 import io.appform.secretary.server.utils.MapperUtils;
 import lombok.experimental.UtilityClass;
 
