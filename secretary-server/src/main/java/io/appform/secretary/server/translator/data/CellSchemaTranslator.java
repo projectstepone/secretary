@@ -1,18 +1,18 @@
 package io.appform.secretary.server.translator.data;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import io.appform.secretary.model.schema.cell.CellSchema;
+import com.google.inject.Singleton;
 import io.appform.secretary.model.schema.Schema;
-import io.appform.secretary.server.dao.StoredValidationSchema;
+import io.appform.secretary.model.schema.cell.CellSchema;
+import io.appform.secretary.server.dao.StoredCellSchema;
 import io.appform.secretary.server.utils.MapperUtils;
-import lombok.experimental.UtilityClass;
 
 import java.util.List;
 
-@UtilityClass
-public class SchemaTranslator {
+@Singleton
+public class CellSchemaTranslator {
 
-    public CellSchema toDto(StoredValidationSchema dao) {
+    public CellSchema toDto(StoredCellSchema dao) {
         return CellSchema.builder()
                 .uuid(dao.getUuid())
                 .name(dao.getName())
@@ -24,8 +24,8 @@ public class SchemaTranslator {
                 .build();
     }
 
-    public StoredValidationSchema toDao(CellSchema dto) {
-        return StoredValidationSchema.builder()
+    public StoredCellSchema toDao(CellSchema dto) {
+        return StoredCellSchema.builder()
                 .uuid(dto.getUuid())
                 .name(dto.getName())
                 .description(dto.getDescription())

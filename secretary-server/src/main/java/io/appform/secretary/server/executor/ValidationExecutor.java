@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class ValidationExecutor {
 
     private static final int SINGLE_SCHEMA = 1;
-    private static final String SCHEMA_COUNT_MISMATCH = "Validator count mismatch for cellSchema {} to validate input {}";
+    private static final String SCHEMA_COUNT_MISMATCH = "Validator count mismatch for schema {} to validate input {}";
 
     public boolean validate(CellSchema cellSchema, String input) {
         try {

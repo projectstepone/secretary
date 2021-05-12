@@ -27,7 +27,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoredValidationSchema {
+public class StoredCellSchema {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -70,7 +70,7 @@ public class BulkDataResource {
         data.setHash(CommonUtils.getHash(data.getContent()));
         log.info("Converted request to data object");
 
-        validator.isValid(data);
+        validator.validate(data);
         executor.processFile(data);
 
         //TODO: Pass UUID for file in response

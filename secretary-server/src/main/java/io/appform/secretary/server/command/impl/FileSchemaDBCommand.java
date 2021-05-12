@@ -7,7 +7,7 @@ import io.appform.dropwizard.sharding.dao.LookupDao;
 import io.appform.secretary.server.command.FileSchemaProvider;
 import io.appform.secretary.server.dao.StoredFileSchema;
 import io.appform.secretary.model.schema.file.FileSchema;
-import io.appform.secretary.server.translator.data.FileSchemaTranslators;
+import io.appform.secretary.server.translator.data.FileSchemaTranslator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.hibernate.criterion.DetachedCriteria;
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 @Singleton
 public class FileSchemaDBCommand implements FileSchemaProvider {
 
-    private final FileSchemaTranslators translator;
+    private final FileSchemaTranslator translator;
     private final LookupDao<StoredFileSchema> lookupDao;
     private final LoadingCache<String, Optional<FileSchema>> cache;
 
     @Inject
     public FileSchemaDBCommand(LookupDao<StoredFileSchema> lookupDao,
-                               FileSchemaTranslators translator) {
+                               FileSchemaTranslator translator) {
         this.lookupDao = lookupDao;
         this.translator = translator;
         log.info("Initializing cache FILE_SCHEMA_CACHE");
@@ -49,7 +49,7 @@ public class FileSchemaDBCommand implements FileSchemaProvider {
             savedData.ifPresent(data -> cache.refresh(data.getWorkflow()));
             return savedData.map(translator::toDto);
         } catch (Exception ex) {
-            log.error("Failed to save file cellSchema {} : {}", schema, ex.getMessage());
+            log.error("Failed to save file schema {} : {}", schema, ex.getMessage());
             return Optional.empty();
         }
     }
@@ -70,7 +70,7 @@ public class FileSchemaDBCommand implements FileSchemaProvider {
                 return Optional.empty();
             }
         } catch (Exception ex) {
-            log.error("Failed to update file cellSchema for workflow {} to {} : {}",
+            log.error("Failed to update file schema for workflow {} to {} : {}",
                     schema.getWorkflow().getName(), schema, ex.getMessage());
             return Optional.empty();
         }
@@ -81,7 +81,7 @@ public class FileSchemaDBCommand implements FileSchemaProvider {
         try {
             return cache.get(uuid);
         } catch (Exception ex) {
-            log.warn("Unable to find entry for workflow: {}. Exception: {}", uuid, ex.getMessage());
+            log.warn("Unable to find file schema for workflow: {}. Exception: {}", uuid, ex.getMessage());
             return Optional.empty();
         }
     }
@@ -91,7 +91,7 @@ public class FileSchemaDBCommand implements FileSchemaProvider {
             val optional = lookupDao.get(uuid);
             return optional.map(translator::toDto);
         } catch (Exception ex) {
-            log.warn("Unable to find entry for workflow: {}. Exception: {}", uuid, ex.getMessage());
+            log.warn("Unable to find file schema for workflow: {}. Exception: {}", uuid, ex.getMessage());
             return Optional.empty();
         }
     }
@@ -105,7 +105,7 @@ public class FileSchemaDBCommand implements FileSchemaProvider {
                     .map(translator::toDto)
                     .collect(Collectors.toList());
         } catch (Exception ex) {
-            log.error("Exception while fetching all file schemas : {}", ex.getMessage());
+            log.error("Exception while fetching all file schemas: {}", ex.getMessage());
             return Collections.emptyList();
         }
     }

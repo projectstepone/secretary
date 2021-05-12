@@ -4,9 +4,9 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.appform.dropwizard.sharding.dao.LookupDao;
 import io.appform.secretary.model.schema.cell.CellSchema;
-import io.appform.secretary.server.command.ValidationSchemaProvider;
-import io.appform.secretary.server.dao.StoredValidationSchema;
-import io.appform.secretary.server.translator.data.SchemaTranslator;
+import io.appform.secretary.server.command.CellSchemaProvider;
+import io.appform.secretary.server.dao.StoredCellSchema;
+import io.appform.secretary.server.translator.data.CellSchemaTranslator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
@@ -23,20 +23,23 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Singleton
-public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
+public class CellSchemaDBCommand implements CellSchemaProvider {
 
-    private final LookupDao<StoredValidationSchema> lookupDao;
+    private final CellSchemaTranslator translator;
+    private final LookupDao<StoredCellSchema> lookupDao;
     private final LoadingCache<String, Optional<CellSchema>> cache;
 
     @Inject
-    public ValidationSchemaDBCommand(LookupDao<StoredValidationSchema> lookupDao) {
+    public CellSchemaDBCommand(LookupDao<StoredCellSchema> lookupDao,
+                               CellSchemaTranslator translator) {
         this.lookupDao = lookupDao;
-        log.info("Initializing cache SCHEMA_CACHE");
+        this.translator = translator;
+        log.info("Initializing cache CELL_SCHEMA_CACHE");
         cache = Caffeine.newBuilder()
                 .maximumSize(1_000)
                 .expireAfterWrite(300, TimeUnit.SECONDS)
                 .build(key -> {
-                    log.debug("Loading data for file with uuid: {}", key);
+                    log.debug("Loading data for schema with uuid: {}", key);
                     return getFromDb(key);
                 });
     }
@@ -45,11 +48,11 @@ public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
     public Optional<CellSchema> save(CellSchema cellSchema) {
         try {
             cellSchema.setUuid(createUuid());
-            val savedData = lookupDao.save(SchemaTranslator.toDao(cellSchema));
+            val savedData = lookupDao.save(translator.toDao(cellSchema));
             savedData.ifPresent(data -> cache.refresh(data.getUuid()));
-            return savedData.map(SchemaTranslator::toDto);
+            return savedData.map(translator::toDto);
         } catch (Exception ex) {
-            log.error("Failed to save cellSchema {} : {}", cellSchema, ex.getMessage());
+            log.error("Failed to save cell schema {} : {}", cellSchema, ex.getMessage());
             return Optional.empty();
         }
     }
@@ -60,7 +63,7 @@ public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
             boolean updated = lookupDao.update(cellSchema.getUuid(), storedSchema -> {
                 if (storedSchema.isPresent()) {
                     storedSchema.get().setActive(cellSchema.isActive());
-                    storedSchema.get().setValidators(SchemaTranslator.toDao(cellSchema).getValidators());
+                    storedSchema.get().setValidators(translator.toDao(cellSchema).getValidators());
                 }
                 return storedSchema.orElse(null);
             });
@@ -71,7 +74,7 @@ public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
                 return Optional.empty();
             }
         } catch (Exception ex) {
-            log.error("Failed to update cellSchema for uuid {} to {} : {}",
+            log.error("Failed to update cell schema with uuid {} to {} : {}",
                     cellSchema.getUuid(), cellSchema, ex.getMessage());
             return Optional.empty();
         }
@@ -82,7 +85,7 @@ public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
         try {
             return cache.get(uuid);
         } catch (Exception ex) {
-            log.warn("Unable to find entry for uuid: {}. Exception: {}", uuid, ex.getMessage());
+            log.warn("Unable to find schema with uuid: {}. Exception: {}", uuid, ex.getMessage());
             return Optional.empty();
         }
     }
@@ -90,9 +93,9 @@ public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
     public Optional<CellSchema> getFromDb(String uuid) {
         try {
             val optional = lookupDao.get(uuid);
-            return optional.map(SchemaTranslator::toDto);
+            return optional.map(translator::toDto);
         } catch (Exception ex) {
-            log.warn("Unable to find entry for uuid: {}. Exception: {}", uuid, ex.getMessage());
+            log.warn("Unable to find schema with uuid: {}. Exception: {}", uuid, ex.getMessage());
             return Optional.empty();
         }
     }
@@ -100,13 +103,13 @@ public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
     @Override
     public List<CellSchema> getAll() {
         try {
-            DetachedCriteria criteria = DetachedCriteria.forClass(StoredValidationSchema.class);
+            DetachedCriteria criteria = DetachedCriteria.forClass(StoredCellSchema.class);
             return lookupDao.scatterGather(criteria)
                     .stream()
-                    .map(SchemaTranslator::toDto)
+                    .map(translator::toDto)
                     .collect(Collectors.toList());
         } catch (Exception ex) {
-            log.error("Exception while fetching all schemas : {}", ex.getMessage());
+            log.error("Exception while fetching all cell schemas: {}", ex.getMessage());
             return Collections.emptyList();
         }
     }

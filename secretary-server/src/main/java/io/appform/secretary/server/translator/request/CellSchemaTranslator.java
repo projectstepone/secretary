@@ -1,16 +1,16 @@
 package io.appform.secretary.server.translator.request;
 
+import com.google.inject.Singleton;
 import io.appform.secretary.model.schema.cell.CellSchema;
-import io.appform.secretary.model.schema.cell.request.CreateSchemaRequest;
-import io.appform.secretary.model.schema.cell.request.UpdateSchemaRequest;
-import lombok.experimental.UtilityClass;
+import io.appform.secretary.model.schema.cell.request.CreateRequest;
+import io.appform.secretary.model.schema.cell.request.UpdateRequest;
 
 import java.util.Objects;
 
-@UtilityClass
-public class SchemaRequestTranslator {
+@Singleton
+public class CellSchemaTranslator {
 
-    public CellSchema createSchema(CreateSchemaRequest request) {
+    public CellSchema toSchema(CreateRequest request) {
         return CellSchema.builder()
                 .active(true)
                 .name(request.getName())
@@ -20,8 +20,8 @@ public class SchemaRequestTranslator {
                 .build();
     }
 
-    public CellSchema updateSchema(UpdateSchemaRequest request, CellSchema cellSchema) {
-        cellSchema.setActive(request.isValid());
+    public CellSchema toSchema(UpdateRequest request, CellSchema cellSchema) {
+        cellSchema.setActive(request.isActive());
         if (!Objects.isNull(request.getSchemas())) {
             cellSchema.setSchemas(request.getSchemas());
         }

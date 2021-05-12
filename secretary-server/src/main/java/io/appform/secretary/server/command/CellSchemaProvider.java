@@ -5,7 +5,7 @@ import io.appform.secretary.model.schema.cell.CellSchema;
 import java.util.List;
 import java.util.Optional;
 
-public interface ValidationSchemaProvider {
+public interface CellSchemaProvider {
 
     Optional<CellSchema> save(CellSchema cellSchema);
 

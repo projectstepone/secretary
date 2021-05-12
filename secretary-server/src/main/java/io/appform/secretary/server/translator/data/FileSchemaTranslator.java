@@ -5,7 +5,7 @@ import io.appform.secretary.model.Workflow;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
 import io.appform.secretary.model.schema.cell.CellSchema;
-import io.appform.secretary.server.command.ValidationSchemaProvider;
+import io.appform.secretary.server.command.CellSchemaProvider;
 import io.appform.secretary.server.command.WorkflowProvider;
 import io.appform.secretary.server.dao.StoredFileSchema;
 import io.appform.secretary.model.schema.file.FileSchema;
@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-public class FileSchemaTranslators {
+public class FileSchemaTranslator {
 
     private final WorkflowProvider workflowProvider;
-    private final ValidationSchemaProvider schemaProvider;
+    private final CellSchemaProvider schemaProvider;
 
     private static final String SEPARATOR = " ";
 
@@ -45,7 +45,7 @@ public class FileSchemaTranslators {
                     if (schema.isPresent()) {
                         return schema.get();
                     } else {
-                        throw new SecretaryError("CellSchema is not present: " + schemaId,
+                        throw new SecretaryError("Cell schema is not present: " + schemaId,
                                 ResponseCode.INTERNAL_SERVER_ERROR);
                     }
                 })

@@ -1,5 +1,6 @@
-package io.appform.secretary.model.schema.file.request;
+package io.appform.secretary.model.schema.cell.request;
 
+import io.appform.secretary.model.schema.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,15 +13,23 @@ import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class CreateSchemaRequest {
+@AllArgsConstructor
+public class CreateRequest {
 
     @Valid
     @NotBlank
-    private String workflow;
+    private String name;
+
+    @Valid
+    @NotBlank
+    private String description;
+
+    @Valid
+    @NotBlank
+    private String tag;
 
     @Valid
     @NotNull
-    private List<String> schemas;
+    private List<Schema> schemas;
 }

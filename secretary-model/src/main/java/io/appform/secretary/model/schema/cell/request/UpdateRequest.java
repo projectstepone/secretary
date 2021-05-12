@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -15,21 +14,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateSchemaRequest {
-
-    @Valid
-    @NotBlank
-    private String name;
-
-    @Valid
-    @NotBlank
-    private String description;
-
-    @Valid
-    @NotBlank
-    private String tag;
+public class UpdateRequest {
 
     @Valid
     @NotNull
     private List<Schema> schemas;
+
+    @Valid
+    @Builder.Default
+    private boolean active = true;
 }

@@ -21,7 +21,7 @@ public class FileInputValidator implements Validator<InputFileData> {
     private final WorkflowProvider workflowDBCommand;
 
     @Override
-    public boolean isValid(InputFileData input) {
+    public void validate(InputFileData input) {
 
         val workflowId = input.getWorkflow();
         val optionalWorkflow = workflowDBCommand.get(workflowId);
@@ -35,19 +35,15 @@ public class FileInputValidator implements Validator<InputFileData> {
         }
 
         val data = fileDataDBCommand.getByHashValue(input.getHash());
-        if(!data.isPresent()) {
-            return true;
-        } else {
+        if(data.isPresent()) {
             input.setRetry(true);
             input.setUuid(data.get().getUuid());
-            //TODO: Add time limit to skip processing old files
             if (data.get().getState().isProcessed()) {
                 throw new SecretaryError("File is already processed. File hash: " + input.getHash(),
                         ResponseCode.BAD_REQUEST);
             }
         }
 
-        return true;
     }
 
 }
