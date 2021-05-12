@@ -3,12 +3,11 @@ package io.appform.secretary.server.resources;
 import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
-import io.appform.secretary.model.fileschema.request.NewFileSchemaRequest;
-import io.appform.secretary.model.schema.request.NewSchemaRequest;
-import io.appform.secretary.model.schema.request.UpdateSchemaRequest;
+import io.appform.secretary.model.schema.cell.CellSchema;
+import io.appform.secretary.model.schema.cell.request.CreateSchemaRequest;
+import io.appform.secretary.model.schema.cell.request.UpdateSchemaRequest;
 import io.appform.secretary.server.command.FileSchemaProvider;
 import io.appform.secretary.server.command.ValidationSchemaProvider;
-import io.appform.secretary.model.schema.Schema;
 import io.appform.secretary.server.translator.request.FileSchemaRequestTranslator;
 import io.appform.secretary.server.translator.request.SchemaRequestTranslator;
 import io.swagger.annotations.Api;
@@ -34,9 +33,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Path("/v1/schema")
+@Path("/v1/cellSchema")
 @Produces(MediaType.APPLICATION_JSON)
-@Api("Schema APIs")
+@Api("CellSchema APIs")
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class SchemaResource {
 
@@ -47,31 +46,31 @@ public class SchemaResource {
     @GET
     @ApiOperation("Get all schemas")
     public Response getAllSchema(@QueryParam("active") boolean active) {
-        log.info("Request received to fetch all schemas");
-        List<Schema> schemas = schemaProvider.getAll();
+        log.info("Request received to fetch all cellSchemas");
+        List<CellSchema> cellSchemas = schemaProvider.getAll();
         if (active) {
-            schemas = schemas.stream()
-                    .filter(Schema::isActive)
+            cellSchemas = cellSchemas.stream()
+                    .filter(CellSchema::isActive)
                     .collect(Collectors.toList());
         }
 
-        log.info("Response list of schemas : {}", schemas);
+        log.info("Response list of cellSchemas : {}", cellSchemas);
         return Response.ok()
-                .entity(schemas)
+                .entity(cellSchemas)
                 .build();
     }
 
     @GET
     @Path("/{schemaId}")
-    @ApiOperation("Get schema for given ID")
+    @ApiOperation("Get cellSchema for given ID")
     public Response getSchema(@PathParam("schemaId") @Valid @NotBlank final String schemaId) {
-        log.info("Request received to fetch schema for uuid : {}", schemaId);
+        log.info("Request received to fetch cellSchema for uuid : {}", schemaId);
 
         val uuid = schemaId.trim();
         val optionalSchema = schemaProvider.get(uuid);
 
         if (optionalSchema.isPresent()) {
-            log.info("Response: Schema : {}", optionalSchema.get());
+            log.info("Response: CellSchema : {}", optionalSchema.get());
             return Response.ok()
                     .entity(GenericResponse.builder()
                             .success(true)
@@ -79,47 +78,47 @@ public class SchemaResource {
                             .build())
                     .build();
         } else {
-            throw new SecretaryError("Unable to find schema: " + uuid,
+            throw new SecretaryError("Unable to find cellSchema: " + uuid,
                     ResponseCode.BAD_REQUEST);
         }
     }
 
     @POST
     @Path("/create")
-    @ApiOperation("Create a schema")
-    public Response createSchema(@Valid NewSchemaRequest request) {
-        log.info("Request received to create schema : {}", request);
+    @ApiOperation("Create a cellSchema")
+    public Response createSchema(@Valid CreateSchemaRequest request) {
+        log.info("Request received to create cellSchema : {}", request);
 
         //TODO: Filter instance of abstract class
         //TODO: Add validator for request
-        Optional<Schema> optionalSchema = schemaProvider.save(SchemaRequestTranslator.createSchema(request));
+        Optional<CellSchema> optionalSchema = schemaProvider.save(SchemaRequestTranslator.createSchema(request));
         if (optionalSchema.isPresent()) {
             log.info("Response object : {}", optionalSchema.get());
             return Response.ok()
                     .entity(optionalSchema.get())
                     .build();
         } else {
-            throw new SecretaryError("Unable to create schema: " + request,
+            throw new SecretaryError("Unable to create cellSchema: " + request,
                     ResponseCode.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PUT
     @Path("/update/{schemaId}")
-    @ApiOperation("Update schema")
+    @ApiOperation("Update cellSchema")
     public Response updateSchema(@PathParam("schemaId") String schemaId,
                                  @Valid UpdateSchemaRequest request) {
-        log.info("Request received for schema update : id {} request : {}", schemaId, request);
+        log.info("Request received for cellSchema update : id {} request : {}", schemaId, request);
 
         val schema = schemaProvider.get(schemaId);
         if (!schema.isPresent()) {
-            throw new SecretaryError("Unable to find schema: " + schemaId,
+            throw new SecretaryError("Unable to find cellSchema: " + schemaId,
                     ResponseCode.BAD_REQUEST);
         }
 
         val newSchema = schemaProvider.update(SchemaRequestTranslator.updateSchema(request, schema.get()));
         if (newSchema.isPresent()) {
-            log.info("Response: Updated schema : {}", newSchema.get());
+            log.info("Response: Updated cellSchema : {}", newSchema.get());
             return Response.ok()
                     .entity(GenericResponse.builder()
                             .success(true)
@@ -127,21 +126,21 @@ public class SchemaResource {
                             .build())
                     .build();
         } else {
-            throw new SecretaryError("Unable to update schema: " + request,
+            throw new SecretaryError("Unable to update cellSchema: " + request,
                     ResponseCode.INTERNAL_SERVER_ERROR);
         }
     }
 
     @POST
     @Path("/file/create")
-    @ApiOperation("Create a file schema")
-    public Response createFileSchema(@Valid NewFileSchemaRequest request) {
-        log.info("Request received to create schema : {}", request);
+    @ApiOperation("Create a file cellSchema")
+    public Response createFileSchema(@Valid io.appform.secretary.model.schema.file.request.CreateSchemaRequest request) {
+        log.info("Request received to create cellSchema : {}", request);
 
         val schemaRequest = fileSchemaTranslator.getFileSchema(request);
         val fileSchema = fileSchemaProvider.save(schemaRequest);
         if (fileSchema.isPresent()) {
-            log.info("Response: File schema: {}", fileSchema.get());
+            log.info("Response: File cellSchema: {}", fileSchema.get());
             return Response.ok()
                     .entity(GenericResponse.builder()
                             .success(true)
@@ -149,7 +148,7 @@ public class SchemaResource {
                             .build())
                     .build();
         } else {
-            throw new SecretaryError("Unable to create file schema: " + request,
+            throw new SecretaryError("Unable to create file cellSchema: " + request,
                     ResponseCode.INTERNAL_SERVER_ERROR);
         }
     }

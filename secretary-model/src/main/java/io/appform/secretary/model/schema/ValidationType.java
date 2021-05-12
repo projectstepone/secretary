@@ -1,6 +1,7 @@
 package io.appform.secretary.model.schema;
 
 public enum ValidationType {
+
     VALIDATION_RANGE,
     VALIDATION_LIST,
     VALIDATION_REGEX;

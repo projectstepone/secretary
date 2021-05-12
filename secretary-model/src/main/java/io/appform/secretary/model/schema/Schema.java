@@ -1,24 +1,28 @@
 package io.appform.secretary.model.schema;
 
-import io.appform.secretary.model.schema.ValidationSchema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import io.appform.secretary.model.schema.impl.ListSchema;
+import io.appform.secretary.model.schema.impl.RangeSchema;
+import io.appform.secretary.model.schema.impl.RegexSchema;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Schema {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ListSchema.class, name = ValidationType.VALIDATION_LIST_TEXT),
+        @JsonSubTypes.Type(value = RangeSchema.class, name = ValidationType.VALIDATION_RANGE_TEXT),
+        @JsonSubTypes.Type(value = RegexSchema.class, name = ValidationType.VALIDATION_REGEX_TEXT)
+})
+public abstract class Schema {
 
-    private String uuid;
-    private String name;
-    private String description;
+    private final ValidationType type;
     private String tag;
-    private boolean active;
-    private List<ValidationSchema> schemas;
 
+    protected Schema(ValidationType type, String tag) {
+        this.type = type;
+        this.tag = tag;
+    }
+
+    public abstract <T> T visit(SchemaHandler<T> handler);
 }

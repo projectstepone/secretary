@@ -1,26 +1,26 @@
 package io.appform.secretary.model.schema.impl;
 
 import io.appform.secretary.model.schema.SchemaHandler;
-import io.appform.secretary.model.schema.ValidationSchema;
+import io.appform.secretary.model.schema.Schema;
 import io.appform.secretary.model.schema.ValidationType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.List;
-
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class ListValidationSchema extends ValidationSchema {
+public class RangeSchema extends Schema {
 
-    private List<String> values;
+    private String start;
+    private String end;
 
     @Builder
-    public ListValidationSchema(List<String> values, String tag) {
-        super(ValidationType.VALIDATION_LIST, tag);
-        this.values = values;
+    public RangeSchema(String start, String end, String tag) {
+        super(ValidationType.VALIDATION_RANGE, tag);
+        this.start = start;
+        this.end = end;
     }
 
     @Override

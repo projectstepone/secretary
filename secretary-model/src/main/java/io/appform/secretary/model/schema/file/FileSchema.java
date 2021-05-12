@@ -1,7 +1,7 @@
-package io.appform.secretary.model.fileschema;
+package io.appform.secretary.model.schema.file;
 
 import io.appform.secretary.model.Workflow;
-import io.appform.secretary.model.schema.Schema;
+import io.appform.secretary.model.schema.cell.CellSchema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileSchema {
-
     private Workflow workflow;
-    private List<Schema> schema;
+    private List<CellSchema> cellSchema;
 }

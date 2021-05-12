@@ -1,15 +1,13 @@
-package io.appform.secretary.model.schema.request;
+package io.appform.secretary.model.schema.cell.request;
 
-import io.appform.secretary.model.schema.ValidationSchema;
+import io.appform.secretary.model.schema.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.DefaultValue;
 import java.util.List;
 
 @Data
@@ -19,9 +17,10 @@ import java.util.List;
 public class UpdateSchemaRequest {
 
     @Valid
-    private List<ValidationSchema> schema;
+    @NotNull
+    private List<Schema> schemas;
 
     @Valid
     @Builder.Default
-    private boolean valid = true;
+    private boolean active = true;
 }

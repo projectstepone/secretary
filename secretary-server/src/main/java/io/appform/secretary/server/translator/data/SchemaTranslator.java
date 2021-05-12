@@ -1,9 +1,9 @@
 package io.appform.secretary.server.translator.data;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import io.appform.secretary.model.schema.ValidationSchema;
-import io.appform.secretary.server.dao.StoredValidationSchema;
+import io.appform.secretary.model.schema.cell.CellSchema;
 import io.appform.secretary.model.schema.Schema;
+import io.appform.secretary.server.dao.StoredValidationSchema;
 import io.appform.secretary.server.utils.MapperUtils;
 import lombok.experimental.UtilityClass;
 
@@ -12,19 +12,19 @@ import java.util.List;
 @UtilityClass
 public class SchemaTranslator {
 
-    public Schema toDto(StoredValidationSchema dao) {
-        return Schema.builder()
+    public CellSchema toDto(StoredValidationSchema dao) {
+        return CellSchema.builder()
                 .uuid(dao.getUuid())
                 .name(dao.getName())
                 .description(dao.getDescription())
                 .tag(dao.getTag())
                 .active(dao.isActive())
                 .schemas(MapperUtils.deserialize(dao.getValidators(),
-                        new TypeReference<List<ValidationSchema>>() {}))
+                        new TypeReference<List<Schema>>() {}))
                 .build();
     }
 
-    public StoredValidationSchema toDao(Schema dto) {
+    public StoredValidationSchema toDao(CellSchema dto) {
         return StoredValidationSchema.builder()
                 .uuid(dto.getUuid())
                 .name(dto.getName())

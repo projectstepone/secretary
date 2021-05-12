@@ -1,17 +1,17 @@
 package io.appform.secretary.server.command;
 
-import io.appform.secretary.model.schema.Schema;
+import io.appform.secretary.model.schema.cell.CellSchema;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ValidationSchemaProvider {
 
-    Optional<Schema> save(Schema schema);
+    Optional<CellSchema> save(CellSchema cellSchema);
 
-    Optional<Schema> update(Schema schema);
+    Optional<CellSchema> update(CellSchema cellSchema);
 
-    Optional<Schema> get(String uuid);
+    Optional<CellSchema> get(String uuid);
 
-    List<Schema> getAll();
+    List<CellSchema> getAll();
 }

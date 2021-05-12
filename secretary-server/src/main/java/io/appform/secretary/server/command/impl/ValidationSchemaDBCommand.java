@@ -3,9 +3,9 @@ package io.appform.secretary.server.command.impl;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.appform.dropwizard.sharding.dao.LookupDao;
+import io.appform.secretary.model.schema.cell.CellSchema;
 import io.appform.secretary.server.command.ValidationSchemaProvider;
 import io.appform.secretary.server.dao.StoredValidationSchema;
-import io.appform.secretary.model.schema.Schema;
 import io.appform.secretary.server.translator.data.SchemaTranslator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
 
     private final LookupDao<StoredValidationSchema> lookupDao;
-    private final LoadingCache<String, Optional<Schema>> cache;
+    private final LoadingCache<String, Optional<CellSchema>> cache;
 
     @Inject
     public ValidationSchemaDBCommand(LookupDao<StoredValidationSchema> lookupDao) {
@@ -42,43 +42,43 @@ public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
     }
 
     @Override
-    public Optional<Schema> save(Schema schema) {
+    public Optional<CellSchema> save(CellSchema cellSchema) {
         try {
-            schema.setUuid(createUuid());
-            val savedData = lookupDao.save(SchemaTranslator.toDao(schema));
+            cellSchema.setUuid(createUuid());
+            val savedData = lookupDao.save(SchemaTranslator.toDao(cellSchema));
             savedData.ifPresent(data -> cache.refresh(data.getUuid()));
             return savedData.map(SchemaTranslator::toDto);
         } catch (Exception ex) {
-            log.error("Failed to save schema {} : {}", schema, ex.getMessage());
+            log.error("Failed to save cellSchema {} : {}", cellSchema, ex.getMessage());
             return Optional.empty();
         }
     }
 
     @Override
-    public Optional<Schema> update(Schema schema) {
+    public Optional<CellSchema> update(CellSchema cellSchema) {
         try {
-            boolean updated = lookupDao.update(schema.getUuid(), storedSchema -> {
+            boolean updated = lookupDao.update(cellSchema.getUuid(), storedSchema -> {
                 if (storedSchema.isPresent()) {
-                    storedSchema.get().setActive(schema.isActive());
-                    storedSchema.get().setValidators(SchemaTranslator.toDao(schema).getValidators());
+                    storedSchema.get().setActive(cellSchema.isActive());
+                    storedSchema.get().setValidators(SchemaTranslator.toDao(cellSchema).getValidators());
                 }
                 return storedSchema.orElse(null);
             });
             if (updated) {
-                cache.refresh(schema.getUuid());
-                return getFromDb(schema.getUuid());
+                cache.refresh(cellSchema.getUuid());
+                return getFromDb(cellSchema.getUuid());
             } else {
                 return Optional.empty();
             }
         } catch (Exception ex) {
-            log.error("Failed to update schema for uuid {} to {} : {}",
-                    schema.getUuid(), schema, ex.getMessage());
+            log.error("Failed to update cellSchema for uuid {} to {} : {}",
+                    cellSchema.getUuid(), cellSchema, ex.getMessage());
             return Optional.empty();
         }
     }
 
     @Override
-    public Optional<Schema> get(String uuid) {
+    public Optional<CellSchema> get(String uuid) {
         try {
             return cache.get(uuid);
         } catch (Exception ex) {
@@ -87,7 +87,7 @@ public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
         }
     }
 
-    public Optional<Schema> getFromDb(String uuid) {
+    public Optional<CellSchema> getFromDb(String uuid) {
         try {
             val optional = lookupDao.get(uuid);
             return optional.map(SchemaTranslator::toDto);
@@ -98,7 +98,7 @@ public class ValidationSchemaDBCommand implements ValidationSchemaProvider {
     }
 
     @Override
-    public List<Schema> getAll() {
+    public List<CellSchema> getAll() {
         try {
             DetachedCriteria criteria = DetachedCriteria.forClass(StoredValidationSchema.class);
             return lookupDao.scatterGather(criteria)

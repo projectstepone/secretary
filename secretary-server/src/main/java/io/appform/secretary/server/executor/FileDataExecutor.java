@@ -4,15 +4,15 @@ import com.google.inject.Singleton;
 import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.RawDataEntry;
 import io.appform.secretary.model.configuration.SecretaryConfiguration;
+import io.appform.secretary.model.schema.cell.CellSchema;
 import io.appform.secretary.model.state.FileState;
 import io.appform.secretary.server.command.FileRowDataProvider;
 import io.appform.secretary.server.command.FileSchemaProvider;
 import io.appform.secretary.server.command.KafkaProducerCommand;
 import io.appform.secretary.server.command.impl.FileDataDBCommand;
-import io.appform.secretary.model.fileschema.FileSchema;
+import io.appform.secretary.model.schema.file.FileSchema;
 import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.internal.model.KafkaMessage;
-import io.appform.secretary.model.schema.Schema;
 import io.appform.secretary.server.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -113,7 +113,7 @@ public class FileDataExecutor implements DataExecutor {
     private List<RawDataEntry> getValidEntries(FileData file, InputFileData input) {
         val fileSchema = getFileSchema(file.getWorkflow());
         if (Objects.isNull(fileSchema)) {
-            log.warn("Unable to find file schema for workflow: {}", file.getWorkflow());
+            log.warn("Unable to find file cellSchema for workflow: {}", file.getWorkflow());
             return Collections.emptyList();
         }
 
@@ -127,8 +127,8 @@ public class FileDataExecutor implements DataExecutor {
         return validEntries;
     }
 
-    private boolean validateEntry(Schema schema, String entry) {
-        return validationExecutor.validate(schema, entry);
+    private boolean validateEntry(CellSchema cellSchema, String entry) {
+        return validationExecutor.validate(cellSchema, entry);
     }
 
     private boolean isFalse(boolean bool) {
@@ -147,15 +147,15 @@ public class FileDataExecutor implements DataExecutor {
             return null;
         }
 
-        val schemaSize = schema.getSchema().size();
+        val schemaSize = schema.getCellSchema().size();
         val dataSize = entry.getData().size();
         if (schemaSize != dataSize) {
-            log.warn("Schema and data mismatch : Schema entries {} Data entries: {}", schemaSize, dataSize);
+            log.warn("CellSchema and data mismatch : CellSchema entries {} Data entries: {}", schemaSize, dataSize);
             return null;
         }
 
-        val invalid = IntStream.range(0, schema.getSchema().size())
-                .mapToObj(index -> validateEntry(schema.getSchema().get(index), entry.getData().get(index)))
+        val invalid = IntStream.range(0, schema.getCellSchema().size())
+                .mapToObj(index -> validateEntry(schema.getCellSchema().get(index), entry.getData().get(index)))
                 .anyMatch(this::isFalse);
 
         //TODO: Convert row to key-value pair

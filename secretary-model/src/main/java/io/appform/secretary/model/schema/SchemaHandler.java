@@ -1,14 +1,14 @@
 package io.appform.secretary.model.schema;
 
-import io.appform.secretary.model.schema.impl.ListValidationSchema;
-import io.appform.secretary.model.schema.impl.RangeValidationSchema;
-import io.appform.secretary.model.schema.impl.RegexValidationSchema;
+import io.appform.secretary.model.schema.impl.ListSchema;
+import io.appform.secretary.model.schema.impl.RangeSchema;
+import io.appform.secretary.model.schema.impl.RegexSchema;
 
 public interface SchemaHandler<T>{
 
-    public T handle(ListValidationSchema schema);
+    public T handle(ListSchema schema);
 
-    public T handle(RegexValidationSchema schema);
+    public T handle(RegexSchema schema);
 
-    public T handle(RangeValidationSchema schema);
+    public T handle(RangeSchema schema);
 }

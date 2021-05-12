@@ -1,8 +1,8 @@
 package io.appform.secretary.server.translator.request;
 
-import io.appform.secretary.model.schema.request.NewSchemaRequest;
-import io.appform.secretary.model.schema.request.UpdateSchemaRequest;
-import io.appform.secretary.model.schema.Schema;
+import io.appform.secretary.model.schema.cell.CellSchema;
+import io.appform.secretary.model.schema.cell.request.CreateSchemaRequest;
+import io.appform.secretary.model.schema.cell.request.UpdateSchemaRequest;
 import lombok.experimental.UtilityClass;
 
 import java.util.Objects;
@@ -10,21 +10,21 @@ import java.util.Objects;
 @UtilityClass
 public class SchemaRequestTranslator {
 
-    public Schema createSchema(NewSchemaRequest request) {
-        return Schema.builder()
+    public CellSchema createSchema(CreateSchemaRequest request) {
+        return CellSchema.builder()
                 .active(true)
                 .name(request.getName())
                 .description(request.getDescription())
                 .tag(request.getTag())
-                .schemas(request.getSchema())
+                .schemas(request.getSchemas())
                 .build();
     }
 
-    public Schema updateSchema(UpdateSchemaRequest request, Schema schema) {
-        schema.setActive(request.isValid());
-        if (!Objects.isNull(request.getSchema())) {
-            schema.setSchemas(request.getSchema());
+    public CellSchema updateSchema(UpdateSchemaRequest request, CellSchema cellSchema) {
+        cellSchema.setActive(request.isValid());
+        if (!Objects.isNull(request.getSchemas())) {
+            cellSchema.setSchemas(request.getSchemas());
         }
-        return schema;
+        return cellSchema;
     }
 }

@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 import io.appform.dropwizard.sharding.dao.LookupDao;
 import io.appform.secretary.server.command.FileSchemaProvider;
 import io.appform.secretary.server.dao.StoredFileSchema;
-import io.appform.secretary.model.fileschema.FileSchema;
+import io.appform.secretary.model.schema.file.FileSchema;
 import io.appform.secretary.server.translator.data.FileSchemaTranslators;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -49,7 +49,7 @@ public class FileSchemaDBCommand implements FileSchemaProvider {
             savedData.ifPresent(data -> cache.refresh(data.getWorkflow()));
             return savedData.map(translator::toDto);
         } catch (Exception ex) {
-            log.error("Failed to save file schema {} : {}", schema, ex.getMessage());
+            log.error("Failed to save file cellSchema {} : {}", schema, ex.getMessage());
             return Optional.empty();
         }
     }
@@ -70,7 +70,7 @@ public class FileSchemaDBCommand implements FileSchemaProvider {
                 return Optional.empty();
             }
         } catch (Exception ex) {
-            log.error("Failed to update file schema for workflow {} to {} : {}",
+            log.error("Failed to update file cellSchema for workflow {} to {} : {}",
                     schema.getWorkflow().getName(), schema, ex.getMessage());
             return Optional.empty();
         }

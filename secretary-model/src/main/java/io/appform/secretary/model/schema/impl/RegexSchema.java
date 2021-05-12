@@ -1,7 +1,7 @@
 package io.appform.secretary.model.schema.impl;
 
 import io.appform.secretary.model.schema.SchemaHandler;
-import io.appform.secretary.model.schema.ValidationSchema;
+import io.appform.secretary.model.schema.Schema;
 import io.appform.secretary.model.schema.ValidationType;
 import lombok.Builder;
 import lombok.Data;
@@ -11,16 +11,14 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class RangeValidationSchema extends ValidationSchema {
+public class RegexSchema extends Schema {
 
-    private String start;
-    private String end;
+    private String regex;
 
     @Builder
-    public RangeValidationSchema(String start, String end, String tag) {
-        super(ValidationType.VALIDATION_RANGE, tag);
-        this.start = start;
-        this.end = end;
+    public RegexSchema(String tag, String regex) {
+        super(ValidationType.VALIDATION_REGEX, tag);
+        this.regex = regex;
     }
 
     @Override

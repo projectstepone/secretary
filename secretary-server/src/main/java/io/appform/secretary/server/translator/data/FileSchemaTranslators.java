@@ -4,11 +4,11 @@ import com.google.inject.Singleton;
 import io.appform.secretary.model.Workflow;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
+import io.appform.secretary.model.schema.cell.CellSchema;
 import io.appform.secretary.server.command.ValidationSchemaProvider;
 import io.appform.secretary.server.command.WorkflowProvider;
 import io.appform.secretary.server.dao.StoredFileSchema;
-import io.appform.secretary.model.fileschema.FileSchema;
-import io.appform.secretary.model.schema.Schema;
+import io.appform.secretary.model.schema.file.FileSchema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -38,14 +38,14 @@ public class FileSchemaTranslators {
         }
     }
 
-    private List<Schema> getSchema(List<String> schemas) {
+    private List<CellSchema> getSchema(List<String> schemas) {
         return schemas.stream()
                 .map(schemaId -> {
                     val schema = schemaProvider.get(schemaId);
                     if (schema.isPresent()) {
                         return schema.get();
                     } else {
-                        throw new SecretaryError("Schema is not present: " + schemaId,
+                        throw new SecretaryError("CellSchema is not present: " + schemaId,
                                 ResponseCode.INTERNAL_SERVER_ERROR);
                     }
                 })
@@ -63,15 +63,15 @@ public class FileSchemaTranslators {
     public FileSchema toDto(StoredFileSchema dao) {
         return FileSchema.builder()
                 .workflow(getWorkflow(dao.getWorkflow()))
-                .schema(getSchema(getList(dao.getSchema())))
+                .cellSchema(getSchema(getList(dao.getSchema())))
                 .build();
     }
 
     public StoredFileSchema toDao(FileSchema dto) {
         return StoredFileSchema.builder()
                 .workflow(dto.getWorkflow().getName())
-                .schema(getString(dto.getSchema().stream()
-                        .map(Schema::getUuid)
+                .schema(getString(dto.getCellSchema().stream()
+                        .map(CellSchema::getUuid)
                         .collect(Collectors.toList()))
                 )
                 .build();

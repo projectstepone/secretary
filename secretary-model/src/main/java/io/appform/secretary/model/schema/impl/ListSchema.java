@@ -1,24 +1,26 @@
 package io.appform.secretary.model.schema.impl;
 
 import io.appform.secretary.model.schema.SchemaHandler;
-import io.appform.secretary.model.schema.ValidationSchema;
+import io.appform.secretary.model.schema.Schema;
 import io.appform.secretary.model.schema.ValidationType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.List;
+
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class RegexValidationSchema extends ValidationSchema {
+public class ListSchema extends Schema {
 
-    private String regex;
+    private List<String> values;
 
     @Builder
-    public RegexValidationSchema(String tag, String regex) {
-        super(ValidationType.VALIDATION_REGEX, tag);
-        this.regex = regex;
+    public ListSchema(List<String> values, String tag) {
+        super(ValidationType.VALIDATION_LIST, tag);
+        this.values = values;
     }
 
     @Override

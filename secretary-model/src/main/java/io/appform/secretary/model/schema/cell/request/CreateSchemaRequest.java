@@ -1,6 +1,6 @@
-package io.appform.secretary.model.schema.request;
+package io.appform.secretary.model.schema.cell.request;
 
-import io.appform.secretary.model.schema.ValidationSchema;
+import io.appform.secretary.model.schema.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewSchemaRequest {
+public class CreateSchemaRequest {
 
     @Valid
     @NotBlank
@@ -31,5 +31,5 @@ public class NewSchemaRequest {
 
     @Valid
     @NotNull
-    private List<ValidationSchema> schema;
+    private List<Schema> schemas;
 }

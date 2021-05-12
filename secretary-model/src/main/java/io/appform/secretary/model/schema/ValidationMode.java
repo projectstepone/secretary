@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 
 public enum ValidationMode {
+
     NO_CHECK ("NO_CHECK") {
         public <T> T visit(ValidationModeVisitor<T> visitor) {
             return visitor.visitNoCheck();
