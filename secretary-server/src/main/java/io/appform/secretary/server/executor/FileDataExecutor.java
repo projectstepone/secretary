@@ -4,13 +4,16 @@ import com.google.inject.Singleton;
 import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.RawDataEntry;
 import io.appform.secretary.model.configuration.SecretaryConfiguration;
+import io.appform.secretary.model.schema.file.FileSchema;
 import io.appform.secretary.model.state.FileState;
+import io.appform.secretary.server.command.FileDataProvider;
 import io.appform.secretary.server.command.FileRowDataProvider;
+import io.appform.secretary.server.command.FileSchemaProvider;
 import io.appform.secretary.server.command.KafkaProducerCommand;
-import io.appform.secretary.server.command.impl.FileDataDBCommand;
 import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.internal.model.KafkaMessage;
 import io.appform.secretary.server.utils.CommonUtils;
+import io.appform.secretary.server.validator.RowValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -19,6 +22,7 @@ import lombok.var;
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -31,14 +35,15 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class FileDataExecutor implements DataExecutor {
 
-    private static final String ENTRY_SEPARATOR = ",";
-    private static final String LINE_SEPARATOR = "\n";
-
-    private static final String KAFKA_TOPIC_FILEDATA_INGESTION = "secretary.filedata.random";
     private final SecretaryConfiguration serviceConfig;
     private final KafkaProducerCommand kafkaProducer;
-    private final FileDataDBCommand dbCommand;
+    private final FileDataProvider fileDataProvider;
     private final FileRowDataProvider rowDataProvider;
+    private final FileSchemaProvider fileSchemaProvider;
+    private final RowValidator validator;
+
+    private static final String ENTRY_SEPARATOR = ",";
+    private static final String LINE_SEPARATOR = "\n";
 
     @Override
     public void processFile(InputFileData inputData) {
@@ -59,6 +64,12 @@ public class FileDataExecutor implements DataExecutor {
 
             val validEntries = getValidEntries(data, inputData);
             log.info("File {} has {} valid entries", data.getName(), validEntries.size());
+
+            if (validEntries.size() == 0) {
+                data = updateEntryInDbAndSendEvent(data, FileState.SKIPPED);
+                log.warn("File has no valid entries: {}", data.getUuid());
+                return;
+            }
 
             if (!inputData.isRetry()) {
                 data = updateEntryInDbAndSendEvent(data, FileState.PROCESSING);
@@ -94,31 +105,26 @@ public class FileDataExecutor implements DataExecutor {
         log.info("Ingested {} entries", count.get());
     }
 
+    private FileSchema getFileSchema(String workflow) {
+        val schema = fileSchemaProvider.get(workflow);
+        return schema.orElse(null);
+    }
+
     private List<RawDataEntry> getValidEntries(FileData file, InputFileData input) {
+        val fileSchema = getFileSchema(file.getWorkflow());
+        if (Objects.isNull(fileSchema)) {
+            log.warn("Unable to find file schema for workflow: {}", file.getWorkflow());
+            return Collections.emptyList();
+        }
+
         val dataEntries = getRows(file.getUuid(), input.getContent());
         val validEntries = dataEntries.stream()
-                .map(this::validateRow)
+                .map(entry -> validator.validateRow(entry, fileSchema))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         file.setCount(validEntries.size());
         return validEntries;
-    }
-
-    private RawDataEntry validateRow(RawDataEntry entry) {
-        if (Objects.isNull(entry)) {
-            return null;
-        }
-
-        val emptyValues = entry.getData().stream()
-                .anyMatch(String::isEmpty);
-        if (emptyValues) {
-            return null;
-        }
-
-        //TODO: Add schema validation
-        return entry;
-
     }
 
     private List<RawDataEntry> getRows(String fileId, byte[] data) {
@@ -145,7 +151,7 @@ public class FileDataExecutor implements DataExecutor {
     }
 
     private FileData saveEntryInDbAndSendEvent(FileData data) {
-        val savedData = dbCommand.save(data);
+        val savedData = fileDataProvider.save(data);
 
         //TODO: Send event based on error check
         return savedData.get();
@@ -153,7 +159,7 @@ public class FileDataExecutor implements DataExecutor {
 
     private FileData updateEntryInDbAndSendEvent(FileData data, FileState state) {
         data.setState(state);
-        val savedData = dbCommand.update(data);
+        val savedData = fileDataProvider.update(data);
 
         //TODO: Send event based on error check
         return savedData.get();

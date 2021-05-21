@@ -20,14 +20,14 @@ import java.util.Date;
 @Entity
 @Table(name = "validation_schema",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"uuid"}),
-                @UniqueConstraint(columnNames = {"name", "version"})}
+                @UniqueConstraint(columnNames = {"id"}),
+                @UniqueConstraint(columnNames = {"uuid"})}
         )
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoredValidationSchema {
+public class StoredCellSchema {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,15 +41,18 @@ public class StoredValidationSchema {
         @Column(name = "name")
         private String name;
 
-        @Column(name = "version")
-        private int version;
+        @Column(name = "description")
+        private String description;
+
+        @Column(name = "tag")
+        private String tag;
 
         @Column(name = "active")
         private boolean active;
 
         @Column(name = "data",
                 columnDefinition = "blob")
-        private byte[] schema;
+        private byte[] validators;
 
         @Column(name = "created",
                 columnDefinition = "timestamp",

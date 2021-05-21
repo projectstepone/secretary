@@ -9,11 +9,13 @@ public enum FileState {
 
     ACCEPTED(Values.ACCEPTED, false),
     PROCESSING(Values.PROCESSING, false),
+    SKIPPED(Values.SKIPPED, false),
     PROCESSED(Values.PROCESSED, true);
 
     public static final class Values {
         public static final String ACCEPTED = "accepted";
         public static final String PROCESSING = "processing";
+        public static final String SKIPPED = "skipped";
         public static final String PROCESSED = "processed";
     }
 
