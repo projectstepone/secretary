@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Stage;
+import io.appform.dropwizard.actors.RabbitmqActorBundle;
+import io.appform.dropwizard.actors.config.RMQConfig;
 import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
 import io.appform.secretary.server.exception.GenericExceptionMapper;
@@ -48,12 +50,14 @@ public class App extends Application<AppConfig> {
         MapperUtils.initialize(mapper);
 
         val dbBundle = getDBShardingBundle();
-
+        val actorBundle = initRmqBundle();
+        bootstrap.addBundle(actorBundle);
         bootstrap.addBundle(dbBundle);
-        bootstrap.addBundle(getGuiceBundle(dbBundle));
+        bootstrap.addBundle(getGuiceBundle(dbBundle, actorBundle));
         bootstrap.addBundle(getSwaggerBundle());
         bootstrap.addBundle(new MultiPartBundle());
         bootstrap.addBundle(new ViewBundle<>());
+        bootstrap.addBundle(actorBundle);
     }
 
     @Override
@@ -71,11 +75,11 @@ public class App extends Application<AppConfig> {
         };
     }
 
-    private GuiceBundle<AppConfig> getGuiceBundle(DBShardingBundle<AppConfig> dbShardingBundle) {
+    private GuiceBundle<AppConfig> getGuiceBundle(DBShardingBundle<AppConfig> dbShardingBundle, RabbitmqActorBundle<AppConfig> actorBundle) {
         return GuiceBundle.<AppConfig>builder()
                 .enableAutoConfig(getClass().getPackage().getName())
                 .modules(new DBModule(dbShardingBundle))
-                .modules(new ClientModule())
+                .modules(new ClientModule(actorBundle))
                 .modules(new ProviderModule())
                 .build(Stage.PRODUCTION);
     }
@@ -85,6 +89,15 @@ public class App extends Application<AppConfig> {
             @Override
             protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(AppConfig config) {
                 return config.getSwagger();
+            }
+        };
+    }
+
+    private RabbitmqActorBundle<AppConfig> initRmqBundle() {
+        return new RabbitmqActorBundle<AppConfig>() {
+            @Override
+            protected RMQConfig getConfig(final AppConfig config) {
+                return config.getRmqConfig();
             }
         };
     }

@@ -9,6 +9,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 
 @Slf4j
 @UtilityClass
@@ -53,5 +54,21 @@ public class MapperUtils {
             log.error("Error in deserialization: {}", ex.getMessage());
             throw SecretaryError.propagate(ex, ResponseCode.JSON_ERROR);
         }
+    }
+
+    @SneakyThrows
+    public static  <T> T deserialize(byte[] data, Class<T> valueType) {
+        if (data == null){
+            return null;
+        }
+        return objectMapper.readValue(data, valueType);
+    }
+
+    @SneakyThrows
+    public static  <T> T deserializeString(String data, Class<T> valueType) {
+        if (data == null){
+            return null;
+        }
+        return objectMapper.readValue(data, valueType);
     }
 }

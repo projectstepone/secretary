@@ -1,5 +1,6 @@
 package io.appform.secretary.server.resources;
 
+import com.google.inject.Singleton;
 import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.RawDataEntry;
@@ -11,6 +12,8 @@ import io.appform.secretary.server.executor.DataExecutor;
 import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.utils.CommonUtils;
 import io.appform.secretary.server.validator.FileInputValidator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -25,21 +28,25 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Path("/v1/data")
+@Path("v1/data")
 @Produces(MediaType.APPLICATION_JSON)
-//@Api("Data Processing APIs")
+@Api("Data Processing APIs")
+@Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class BulkDataResource {
 
@@ -48,16 +55,16 @@ public class BulkDataResource {
     private final FileDataProvider fileDataProvider;
     private final FileRowDataProvider rowDataProvider;
 
-    //TODO: Fix compatibility issue between Swagger and Dropwizard Forms
     @POST
+    @SneakyThrows
     @Path("/file/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-//    @ApiOperation("Upload a file for processing")
-    @SneakyThrows
+    @ApiOperation(value = "Upload a file for processing", consumes = MediaType.MULTIPART_FORM_DATA)
     public Response processDataFile(@Valid @NotNull @FormDataParam("file") InputStream fileStream,
                                     @Valid @NotNull @FormDataParam("file") FormDataContentDisposition fileMetaData,
-                                    @Valid @NotBlank @FormDataParam("user") String user,
-                                    @Valid @NotBlank @FormDataParam("flow") String workflow) {
+                                    @NotBlank @QueryParam("user") String user,
+                                    @NotBlank @QueryParam("workflow") String workflow,
+                                    @QueryParam("retry") @DefaultValue("false") boolean retry) {
         log.info("Request: Upload filename : {} workflow: {} user: {}",
                 fileMetaData.getFileName(), workflow, user);
 
@@ -66,16 +73,15 @@ public class BulkDataResource {
                 .content(IOUtils.toByteArray(fileStream))
                 .user(user)
                 .workflow(workflow)
+                .retry(retry)
                 .build();
         data.setHash(CommonUtils.getHash(data.getContent()));
-        log.info("Converted request to data object");
-
         validator.validate(data);
-        executor.processFile(data);
-
-        //TODO: Pass UUID for file in response
-        log.info("Response: Successfully processed file: {}", fileMetaData.getName());
-        return Response.ok().build();
+        log.info("processing file with hashId: {}", data.getHash());
+        val processedFile = executor.processFile(data);
+        return Response.ok()
+                .entity(Collections.singletonMap("id", processedFile.getUuid()))
+                .build();
     }
 
     @GET

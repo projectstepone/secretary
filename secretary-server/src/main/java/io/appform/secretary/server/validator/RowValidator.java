@@ -11,7 +11,6 @@ import lombok.val;
 
 import javax.inject.Inject;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 @Slf4j
 @Singleton
@@ -25,13 +24,6 @@ public class RowValidator {
             return null;
         }
 
-        val emptyValues = entry.getData().stream()
-                .anyMatch(String::isEmpty);
-        if (emptyValues) {
-            log.warn("Empty string detected : {}", entry);
-            return null;
-        }
-
         val schemaSize = schema.getCellSchema().size();
         val dataSize = entry.getData().size();
         if (schemaSize != dataSize) {
@@ -39,12 +31,9 @@ public class RowValidator {
             return null;
         }
 
-        val invalid = IntStream.range(0, schema.getCellSchema().size())
-                .mapToObj(index -> validateEntry(schema.getCellSchema().get(index),
-                        entry.getData().get(index)))
+        val invalid = schema.getCellSchema().stream().map(cellSchema -> validateEntry(cellSchema, entry.getData().get(cellSchema.getName())))
                 .anyMatch(this::isFalse);
 
-        //TODO: Convert row to key-value pair
         return invalid ? null : entry;
     }
 

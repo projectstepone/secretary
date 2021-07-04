@@ -31,6 +31,26 @@
             <artifactId>dropwizard-views-mustache</artifactId>
             <version>${dropwizard.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.appform.dropwizard.actors</groupId>
+            <artifactId>dropwizard-rabbitmq-actors</artifactId>
+            <version>${rmq.actor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>${rmq.client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.appform.http</groupId>
+            <artifactId>http-client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.14.2</version>
+        </dependency>
     </dependencies>
 
     <build>

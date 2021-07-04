@@ -1,10 +1,11 @@
 package io.appform.secretary.server.resources;
 
+import com.google.inject.Singleton;
 import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
 import io.appform.secretary.model.schema.cell.CellSchema;
-import io.appform.secretary.model.schema.cell.request.CreateRequest;
+import io.appform.secretary.model.schema.cell.request.CreateCellSchemaRequest;
 import io.appform.secretary.model.schema.cell.request.UpdateRequest;
 import io.appform.secretary.server.command.CellSchemaProvider;
 import io.appform.secretary.server.translator.request.CellSchemaTranslator;
@@ -27,13 +28,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Path("/v1/schema/cell")
+@Path("v1/schema/cell")
 @Produces(MediaType.APPLICATION_JSON)
 @Api("Cell Schema APIs")
+@Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class CellSchemaResource {
 
@@ -83,7 +84,7 @@ public class CellSchemaResource {
     @POST
     @Path("/create")
     @ApiOperation("Create and enable a new schema")
-    public Response createSchema(@Valid CreateRequest request) {
+    public Response createSchema(@Valid CreateCellSchemaRequest request) {
         log.info("Request: Create schema: {}", request);
 
         //TODO: Filter instance of abstract class

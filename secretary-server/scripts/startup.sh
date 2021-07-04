@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SERVICE_CONFIG_FILE=/config/docker.yml
+SERVICE_CONFIG_FILE=docker.yml
 
 if [ -z "${CONFIG_PATH}" ]; then
     echo "No CONFIG_PATH defined. We shall be using default config from ${SERVICE_CONFIG_FILE}"

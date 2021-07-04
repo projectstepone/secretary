@@ -27,7 +27,7 @@ public class ValidationExecutor {
             }
 
             val mode = ValidationMode.get(cellSchema.getTag());
-            return mode.visit(new ValidationMode.ValidationModeVisitor<Boolean>() {
+            boolean valid = mode.visit(new ValidationMode.ValidationModeVisitor<Boolean>() {
 
                 @Override
                 public Boolean visitNoCheck() {
@@ -49,6 +49,10 @@ public class ValidationExecutor {
                     return validateMatchRegex(cellSchema, input);
                 }
             });
+            if (!valid) {
+                log.info("validation failed for input: {} cellSchema: {}", input, cellSchema);
+            }
+            return valid;
         } catch (Exception ex) {
             log.error("Failed to validate input [{}] with cellSchema {}:", input, cellSchema);
             return false;
@@ -100,7 +104,6 @@ public class ValidationExecutor {
             val regexSchema =  (RegexSchema) cellSchema.getSchemas().get(0);
             val pattern = Pattern.compile(regexSchema.getRegex());
             val matcher = pattern.matcher(input);
-
             return matcher.matches();
         } else {
             return false;

@@ -1,5 +1,6 @@
 package io.appform.secretary.server.resources;
 
+import com.google.inject.Singleton;
 import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.Workflow;
 import io.appform.secretary.model.exception.ResponseCode;
@@ -23,9 +24,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Slf4j
-@Path("/v1/workflow")
+@Path("v1/workflow")
 @Produces(MediaType.APPLICATION_JSON)
 @Api("Workflow APIs")
+@Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class WorkflowResource {
 

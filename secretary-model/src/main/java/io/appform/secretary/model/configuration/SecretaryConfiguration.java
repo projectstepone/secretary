@@ -13,9 +13,6 @@ import org.hibernate.validator.constraints.NotBlank;
 public class SecretaryConfiguration {
 
     @NotBlank
-    private String kafkaTopic;
-
-    @NotBlank
     private String serviceBaseUrl;
 
     @NotBlank

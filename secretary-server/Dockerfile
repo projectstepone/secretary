@@ -7,12 +7,11 @@ RUN apt-get clean \
 
 ADD target/secretary.jar server.jar
 ADD scripts/startup.sh startup.sh
+ADD config/docker.yml docker.yml
 
 CMD ./startup.sh
 
 FROM base as local
-
-ADD config/docker.yml config/docker.yml
 
 FROM base as prod
 

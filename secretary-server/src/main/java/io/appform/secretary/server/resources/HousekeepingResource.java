@@ -1,5 +1,6 @@
 package io.appform.secretary.server.resources;
 
+import com.google.inject.Singleton;
 import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.Workflow;
 import io.appform.secretary.model.exception.ResponseCode;
@@ -26,9 +27,10 @@ import javax.ws.rs.core.Response;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Path("/v1/housekeeping")
+@Path("v1/housekeeping")
 @Produces(MediaType.APPLICATION_JSON)
 @Api("Housekeeping APIs")
+@Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class HousekeepingResource {
 

@@ -2,7 +2,7 @@ package io.appform.secretary.server.translator.request;
 
 import com.google.inject.Singleton;
 import io.appform.secretary.model.schema.cell.CellSchema;
-import io.appform.secretary.model.schema.cell.request.CreateRequest;
+import io.appform.secretary.model.schema.cell.request.CreateCellSchemaRequest;
 import io.appform.secretary.model.schema.cell.request.UpdateRequest;
 
 import java.util.Objects;
@@ -10,7 +10,7 @@ import java.util.Objects;
 @Singleton
 public class CellSchemaTranslator {
 
-    public CellSchema toSchema(CreateRequest request) {
+    public CellSchema toSchema(CreateCellSchemaRequest request) {
         return CellSchema.builder()
                 .active(true)
                 .name(request.getName())

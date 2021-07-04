@@ -1,9 +1,12 @@
 package io.appform.secretary.server;
 
 
+import io.appform.dropwizard.actors.actor.ActorConfig;
+import io.appform.dropwizard.actors.config.RMQConfig;
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
-import io.appform.secretary.model.configuration.KafkaProducerConfiguration;
+import io.appform.http.client.models.HttpConfiguration;
 import io.appform.secretary.model.configuration.SecretaryConfiguration;
+import io.appform.secretary.server.actors.ActorType;
 import io.dropwizard.Configuration;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import lombok.AllArgsConstructor;
@@ -13,6 +16,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -30,9 +34,17 @@ public class AppConfig extends Configuration {
 
     @NotNull
     @Valid
-    private KafkaProducerConfiguration producer;
-
-    @NotNull
-    @Valid
     private SecretaryConfiguration secretaryConfig;
+
+    @Valid
+    @NotNull
+    private RMQConfig rmqConfig;
+
+    @Valid
+    @NotNull
+    private Map<ActorType, ActorConfig> actorConfigs;
+
+    @Valid
+    @NotNull
+    private HttpConfiguration statesmanHttpConfiguration;
 }

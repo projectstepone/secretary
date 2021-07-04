@@ -1,5 +1,6 @@
 package io.appform.secretary.server.resources;
 
+import com.google.inject.Singleton;
 import io.appform.secretary.model.configuration.SecretaryConfiguration;
 import io.appform.secretary.server.views.ConsoleView;
 import io.swagger.annotations.Api;
@@ -14,9 +15,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Slf4j
-@Path("/v1/console")
+@Path("v1/console")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
 @Api("UI APIs")
+@Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class UiResource {
 
