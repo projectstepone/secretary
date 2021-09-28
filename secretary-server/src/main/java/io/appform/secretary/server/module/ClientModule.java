@@ -24,7 +24,6 @@ public class ClientModule extends AbstractModule {
         return actorBundle.getConnection();
     }
 
-
     @Provides
     @Singleton
     public ConnectionRegistry getConnectionRegistry() {

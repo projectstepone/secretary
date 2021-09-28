@@ -1,28 +1,142 @@
 <!DOCTYPE html>
 <html>
-<!--TODO: HTML content needs to be reviewed and cleaned up-->
 <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Angular Material style sheet -->
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!--    <style>-->
-<!--        *,:after,:before{box-sizing:inherit}html{box-sizing:border-box;line-height:1.5;font-family:Roboto,sans-serif;font-weight:400;color:rgba(0,0,0,.87)}@media only screen and (min-width:0){html{font-size:14px}}@media only screen and (min-width:992px){html{font-size:14.5px}}@media only screen and (min-width:1200px){html{font-size:15px}}.vAlign-wrapper{background:#fff;display:table;height:100%;left:0;position:absolute;text-align:center;top:0;width:100%}.vAlign-wrapper .vAlign-inner-wrap{display:table-cell;vertical-align:middle}.vAlign-inner-wrap .vAling-content{margin:2em auto}.vAlign-content img{height:4rem;margin:auto auto .8rem;width:auto}.vAlign-content h2{font-size:1.5em;font-weight:500;line-height:1.75rem;margin-top:0}.vAlign-content h2 span{display:block}.vAlign-content P{font-size:1.1em}@media only screen and (max-width:641px){.vAlign-content P{font-size:1em}}.vAlign-content P.backbtn-text{color:$text-color-lighter;font-size:1.2rem;line-height:1.5rem;padding:.25rem}@media only screen and (max-width:641px){.vAlign-content P.backbtn-text{font-size:1.1rem;margin:auto 1.75rem}}.vAlign-content .spinner-box{display:block;margin:3rem auto}.preloader-wrapper{display:inline-block;position:relative;width:50px;height:50px}.preloader-wrapper.small{width:36px;height:36px}.preloader-wrapper.big{width:64px;height:64px}.preloader-wrapper.active{-webkit-animation:container-rotate 1568ms linear infinite;animation:container-rotate 1568ms linear infinite}@-webkit-keyframes container-rotate{to{-webkit-transform:rotate(360deg)}}@keyframes container-rotate{to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.spinner-layer{position:absolute;width:100%;height:100%;opacity:0;border-color:#26a69a}.spinner-blue,.spinner-blue-only{border-color:#673ab7}.circle-clipper,.circle-clipper .circle,.gap-patch{height:100%;border-color:inherit}.active .spinner-layer.spinner-blue{-webkit-animation:fill-unfill-rotate 5332ms cubic-bezier(.4,0,.2,1) infinite both,blue-fade-in-out 5332ms cubic-bezier(.4,0,.2,1) infinite both;animation:fill-unfill-rotate 5332ms cubic-bezier(.4,0,.2,1) infinite both,blue-fade-in-out 5332ms cubic-bezier(.4,0,.2,1) infinite both}.active .spinner-layer,.active .spinner-layer.spinner-blue-only{opacity:1;-webkit-animation:fill-unfill-rotate 5332ms cubic-bezier(.4,0,.2,1) infinite both;animation:fill-unfill-rotate 5332ms cubic-bezier(.4,0,.2,1) infinite both}@-webkit-keyframes fill-unfill-rotate{12.5%{-webkit-transform:rotate(135deg)}25%{-webkit-transform:rotate(270deg)}37.5%{-webkit-transform:rotate(405deg)}50%{-webkit-transform:rotate(540deg)}62.5%{-webkit-transform:rotate(675deg)}75%{-webkit-transform:rotate(810deg)}87.5%{-webkit-transform:rotate(945deg)}to{-webkit-transform:rotate(1080deg)}}@keyframes fill-unfill-rotate{12.5%{-webkit-transform:rotate(135deg);transform:rotate(135deg)}25%{-webkit-transform:rotate(270deg);transform:rotate(270deg)}37.5%{-webkit-transform:rotate(405deg);transform:rotate(405deg)}50%{-webkit-transform:rotate(540deg);transform:rotate(540deg)}62.5%{-webkit-transform:rotate(675deg);transform:rotate(675deg)}75%{-webkit-transform:rotate(810deg);transform:rotate(810deg)}87.5%{-webkit-transform:rotate(945deg);transform:rotate(945deg)}to{-webkit-transform:rotate(1080deg);transform:rotate(1080deg)}}@-webkit-keyframes blue-fade-in-out{100%,25%,90%,from{opacity:1}26%,89%{opacity:0}}@keyframes blue-fade-in-out{100%,25%,90%,from{opacity:1}26%,89%{opacity:0}}@-webkit-keyframes red-fade-in-out{15%,51%,from{opacity:0}25%,50%{opacity:1}}@keyframes red-fade-in-out{15%,51%,from{opacity:0}25%,50%{opacity:1}}@-webkit-keyframes yellow-fade-in-out{40%,76%,from{opacity:0}50%,75%{opacity:1}}@keyframes yellow-fade-in-out{40%,76%,from{opacity:0}50%,75%{opacity:1}}@-webkit-keyframes green-fade-in-out{100%,65%,from{opacity:0}75%,90%{opacity:1}}@keyframes green-fade-in-out{100%,65%,from{opacity:0}75%,90%{opacity:1}}.gap-patch{position:absolute;top:0;left:45%;width:10%;overflow:hidden}.gap-patch .circle{width:1000%;left:-450%}.circle-clipper{display:inline-block;position:relative;width:50%;overflow:hidden}.circle-clipper .circle{width:200%;border-width:3px;border-style:solid;border-bottom-color:transparent!important;border-radius:50%;-webkit-animation:none;animation:none;position:absolute;top:0;right:0;bottom:0}.circle-clipper.left .circle{left:0;border-right-color:transparent!important;-webkit-transform:rotate(129deg);transform:rotate(129deg)}.circle-clipper.right .circle{left:-100%;border-left-color:transparent!important;-webkit-transform:rotate(-129deg);transform:rotate(-129deg)}.active .circle-clipper.left .circle{-webkit-animation:left-spin 1333ms cubic-bezier(.4,0,.2,1) infinite both;animation:left-spin 1333ms cubic-bezier(.4,0,.2,1) infinite both}.active .circle-clipper.right .circle{-webkit-animation:right-spin 1333ms cubic-bezier(.4,0,.2,1) infinite both;animation:right-spin 1333ms cubic-bezier(.4,0,.2,1) infinite both}@-webkit-keyframes left-spin{from,to{-webkit-transform:rotate(130deg)}50%{-webkit-transform:rotate(-5deg)}}@keyframes left-spin{from,to{-webkit-transform:rotate(130deg);transform:rotate(130deg)}50%{-webkit-transform:rotate(-5deg);transform:rotate(-5deg)}}@-webkit-keyframes right-spin{from,to{-webkit-transform:rotate(-130deg)}50%{-webkit-transform:rotate(5deg)}}@keyframes right-spin{from,to{-webkit-transform:rotate(-130deg);transform:rotate(-130deg)}50%{-webkit-transform:rotate(5deg);transform:rotate(5deg)}}#spinnerContainer.cooldown{-webkit-animation:container-rotate 1568ms linear infinite,fade-out .4s cubic-bezier(.4,0,.2,1);animation:container-rotate 1568ms linear infinite,fade-out .4s cubic-bezier(.4,0,.2,1)}@-webkit-keyframes fade-out{from{opacity:1}to{opacity:0}}@keyframes fade-out{from{opacity:1}to{opacity:0}}-->
-<!--    </style>-->
-
+    <link rel="stylesheet" href="/assets/css/bootstrap.css">
+    <title>Secretary</title>
 </head>
 <body>
+<header>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="/v1/console">Secretary</a>
+        <form class="form-inline" action="/idman/auth/logout" method="post">
+            <span class="navbar-text pr-3">
+                <b>{{idmanUser.user.name}}</b>
+            </span>
+            <button class="btn btn-sm btn-danger cm-logout" type="submit">Logout</button>
+        </form>
+    </nav>
+</header>
 
-<div>
-<form id="frm" method="post" action={{postUrl}} enctype="multipart/form-data">
-    <label for="file">File</label>
-    <input type="file" id="file" name="file" />
-    <label for="user">User</label>
-    <input type="text" id="user" name="user" />
-    <label for="flow">Flow</label>
-    <input type="text" id="flow" name="flow" />
-    <input type="submit" value="Upload" />
-</form>
-</div>
+<main class="container">
+    <form name="upload details" onsubmit="event.preventDefault()">
+        <div class="form-group mt-5">
+            <label for="workflow-options">Select a workflow</label>
+            <select class="form-control" id="workflow-options">
+                <option>None</option>
+                <option>Karnataka</option>
+                <option>Odisha</option>
+                <option>Bihar</option>
+                <option>Patna</option>
+                <option>Rourkela</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="file" class="form-control-file" id="data-file" accept=".csv">
+        </div>
+        <div class="form-group">
+            <button
+                disabled
+                type="submit"
+                id="upload-button"
+                class="btn mb-4 mx-auto"
+                style="width: 200px; margin-bottom: 0px">
+                Upload
+            </button>
+        </div>
+        <div id="alert-message" style="visibility:hidden; display: flex; justify-content: space-between" role="alert">
+            <p id="alert-message-txt" style="display: inline; align-self: center; margin: 0px"></p>
+            <button type="button" aria-label="Close" id="alert-close" style="width: 30px; height: 30px; border: none; background-color: transparent;">
+                <span aria-hidden="true" style="flex: 1;">&times;</span>
+            </button>
+        </div>
+    </form>
+    <table class="table table-hove">
+        <thead>
+            <tr>
+                <th scope="col">Workflow</th>
+                <th scope="col">State</th>
+                <th scope="col">Count</th>
+                <th scope="col">User</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#fileDatas}}
+                <tr>
+                    <td>{{workflow}}</th>
+                    <td>{{state}}</td>
+                    <td>{{count}}</td>
+                    <td>{{user}}</td>
+                    <td>{{createdAt}}</td>
+                </tr>
+            {{/fileDatas}}
+        </tbody>
+    </table>
+</main>
+<script>
+    const workflowSelector = document.getElementById("workflow-options")
+    const uploadButton = document.getElementById("upload-button")
+    const inputFile = document.getElementById("data-file")
+    const alertMessage = document.getElementById("alert-message")
+    const alertMessageTxt = document.getElementById("alert-message-txt")
+    const alertCloseButton = document.getElementById("alert-close")
+
+    workflowSelector.addEventListener('change', (event) => {
+        validateInput()
+    })
+
+    uploadButton.addEventListener('click', (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        const xhr = new XMLHttpRequest()
+        xhr.open("POST", `/v1/data/file/upload?workflow=${workflowSelector.value}`)
+        xhr.setRequestHeader("Accept", "application/json")
+        xhr.addEventListener('load', () => {
+            const jsonResponse = JSON.parse(xhr.response)
+            console.log('upload response', jsonResponse)
+            if (!jsonResponse.success) {
+                alertMessage.setAttribute("class", "alert alert-danger alert-dismissible")
+                alertMessage.style.visibility = 'visible'
+                alertMessageTxt.innerHTML = jsonResponse.error
+                workflowSelector.selectedIndex = 0
+                inputFile.value = ''
+                validateInput()
+            } else {
+                alertMessage.setAttribute("class", "alert alert-success alert-dismissible")
+                alertMessage.style.visibility = 'visible'
+                alertMessageTxt.innerText = 'Successfully uploaded'
+                workflowSelector.selectedIndex = 0
+                inputFile.value = ''
+                validateInput()
+            }
+        })
+        xhr.addEventListener('error', (err) => {
+            console.log('upload error', err)
+        })
+        var formData = new FormData()
+        var file = inputFile.files[0]
+        formData.append('file', file)
+        xhr.send(formData)
+    })
+
+    inputFile.addEventListener('input', (event) => {
+        validateInput()
+    })
+
+    function validateInput() {
+        if (inputFile.files.length !== 0 && workflowSelector.value !== "None") {
+            uploadButton.removeAttribute("disabled")
+        } else {
+            uploadButton.setAttribute("disabled", "true")
+        }
+    }
+
+    alertCloseButton.addEventListener('click', (event) => {
+        alertMessage.style.visibility = 'hidden'
+        alertMessageTxt.innerText = ''
+    })
+</script>
 </body>
 </html>

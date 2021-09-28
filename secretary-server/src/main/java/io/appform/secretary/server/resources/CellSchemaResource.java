@@ -9,8 +9,8 @@ import io.appform.secretary.model.schema.cell.request.CreateCellSchemaRequest;
 import io.appform.secretary.model.schema.cell.request.UpdateRequest;
 import io.appform.secretary.server.command.CellSchemaProvider;
 import io.appform.secretary.server.translator.request.CellSchemaTranslator;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Path("v1/schema/cell")
 @Produces(MediaType.APPLICATION_JSON)
-@Api("Cell Schema APIs")
+@Tag(name = "Cell Schema APIs")
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class CellSchemaResource {
@@ -42,7 +42,7 @@ public class CellSchemaResource {
     private final CellSchemaProvider schemaProvider;
 
     @GET
-    @ApiOperation("Get all schemas")
+    @Operation(summary = "Get all schemas")
     public Response getAllSchema(@QueryParam("active") boolean active) {
         log.info("Request: Get detail for all schemas");
         List<CellSchema> schemas = schemaProvider.getAll();
@@ -60,7 +60,7 @@ public class CellSchemaResource {
 
     @GET
     @Path("/{schemaId}")
-    @ApiOperation("Get schema for given ID")
+    @Operation(summary = "Get schema for given ID")
     public Response getSchema(@PathParam("schemaId") @Valid @NotBlank final String schemaId) {
         log.info("Request: Details for schema for uuid : {}", schemaId);
 
@@ -83,12 +83,10 @@ public class CellSchemaResource {
 
     @POST
     @Path("/create")
-    @ApiOperation("Create and enable a new schema")
+    @Operation(summary = "Create and enable a new schema")
     public Response createSchema(@Valid CreateCellSchemaRequest request) {
         log.info("Request: Create schema: {}", request);
 
-        //TODO: Filter instance of abstract class
-        //TODO: Add validator for request
         val schema = translator.toSchema(request);
         val newSchema = schemaProvider.save(schema);
         if (!newSchema.isPresent()) {
@@ -104,7 +102,7 @@ public class CellSchemaResource {
 
     @PUT
     @Path("/update/{schemaId}")
-    @ApiOperation("Update schema")
+    @Operation(summary = "Update schema")
     public Response updateSchema(@PathParam("schemaId") String schemaId,
                                  @Valid UpdateRequest request) {
         log.info("Request: Update schema: uuid {} to {}", schemaId, request);

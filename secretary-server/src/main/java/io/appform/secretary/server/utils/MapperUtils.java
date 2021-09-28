@@ -9,7 +9,6 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 @Slf4j
 @UtilityClass

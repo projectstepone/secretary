@@ -8,14 +8,15 @@ import io.appform.secretary.model.exception.SecretaryError;
 import io.appform.secretary.model.workflow.WorkflowCreateRequest;
 import io.appform.secretary.model.workflow.WorkflowUpdateRequest;
 import io.appform.secretary.server.command.WorkflowProvider;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -26,7 +27,7 @@ import javax.ws.rs.core.Response;
 @Slf4j
 @Path("v1/workflow")
 @Produces(MediaType.APPLICATION_JSON)
-@Api("Workflow APIs")
+@Tag(name = "Workflow APIs")
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class WorkflowResource {
@@ -35,7 +36,8 @@ public class WorkflowResource {
 
     @POST
     @Path("/create")
-    @ApiParam("Create and enable a new workflow")
+    @Operation(summary = "Create and enable a new workflow")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response createWorkflow(@Valid WorkflowCreateRequest request) {
         log.info("Request: Create workflow: {}", request);
 
@@ -67,7 +69,8 @@ public class WorkflowResource {
 
     @PUT
     @Path("/update")
-    @ApiParam("Update workflow")
+    @Operation(summary = "Update workflow")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response updateWorkflow(@Valid WorkflowUpdateRequest request) {
         log.info("Request: Update workflow: {}", request);
 

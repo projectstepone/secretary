@@ -77,21 +77,21 @@ public class FileSchemaDBCommand implements FileSchemaProvider {
     }
 
     @Override
-    public Optional<FileSchema> get(String uuid) {
+    public Optional<FileSchema> get(String workflow) {
         try {
-            return cache.get(uuid);
+            return cache.get(workflow);
         } catch (Exception ex) {
-            log.warn("Unable to find file schema for workflow: {}. Exception: {}", uuid, ex.getMessage());
+            log.warn("Unable to find file schema for workflow: {}. Exception: {}", workflow, ex.getMessage());
             return Optional.empty();
         }
     }
 
-    public Optional<FileSchema> getFromDb(String uuid) {
+    public Optional<FileSchema> getFromDb(String workflow) {
         try {
-            val optional = lookupDao.get(uuid);
+            val optional = lookupDao.get(workflow);
             return optional.map(translator::toDto);
         } catch (Exception ex) {
-            log.warn("Unable to find file schema for workflow: {}. Exception: {}", uuid, ex.getMessage());
+            log.warn("Unable to find file schema for workflow: {}. Exception: {}", workflow, ex.getMessage());
             return Optional.empty();
         }
     }

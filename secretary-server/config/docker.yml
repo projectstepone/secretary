@@ -80,7 +80,7 @@ rmqConfig:
     - host: ${RMQ_HOST}
       port: ${RMQ_PORT}
   userName: guest
-  threadPoolSize: 32
+  threadPoolSize: 20
   password: guest
   secure: false
 
@@ -105,3 +105,8 @@ statesmanHttpConfiguration:
   idleTimeOutSeconds: 30
   connectTimeoutMs: 10000
   opTimeoutMs: 10000
+
+idManHttpClientConfig:
+  serviceId: SECRETARY
+  authEndpoint: "https://a3ee-122-167-112-171.ngrok.io"
+  authSecret: "6d585863-403c-4ae7-a6d1-dba976734ea0"

@@ -1,6 +1,7 @@
 package io.appform.secretary.server.resources;
 
 import com.google.inject.Singleton;
+import io.appform.idman.authcomponents.security.ServiceUserPrincipal;
 import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.RawDataEntry;
@@ -12,8 +13,9 @@ import io.appform.secretary.server.executor.DataExecutor;
 import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.utils.CommonUtils;
 import io.appform.secretary.server.validator.FileInputValidator;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.dropwizard.auth.Auth;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -45,7 +48,7 @@ import java.util.Optional;
 @Slf4j
 @Path("v1/data")
 @Produces(MediaType.APPLICATION_JSON)
-@Api("Data Processing APIs")
+@Tag(name = "Data Processing APIs")
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class BulkDataResource {
@@ -59,19 +62,20 @@ public class BulkDataResource {
     @SneakyThrows
     @Path("/file/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @ApiOperation(value = "Upload a file for processing", consumes = MediaType.MULTIPART_FORM_DATA)
+    @RolesAllowed("SECRETARY_USER")
+    @Operation(summary = "Upload a file for processing")
     public Response processDataFile(@Valid @NotNull @FormDataParam("file") InputStream fileStream,
                                     @Valid @NotNull @FormDataParam("file") FormDataContentDisposition fileMetaData,
-                                    @NotBlank @QueryParam("user") String user,
+                                    @Auth final ServiceUserPrincipal principal,
                                     @NotBlank @QueryParam("workflow") String workflow,
                                     @QueryParam("retry") @DefaultValue("false") boolean retry) {
         log.info("Request: Upload filename : {} workflow: {} user: {}",
-                fileMetaData.getFileName(), workflow, user);
+                fileMetaData.getFileName(), workflow, principal.getServiceUser().getUser().getName());
 
         val data = InputFileData.builder()
                 .file(fileMetaData.getFileName())
                 .content(IOUtils.toByteArray(fileStream))
-                .user(user)
+                .user(principal.getServiceUser().getUser().getName())
                 .workflow(workflow)
                 .retry(retry)
                 .build();
@@ -86,6 +90,7 @@ public class BulkDataResource {
 
     @GET
     @Path("/status/{fileId}")
+    @Operation(summary = "Gets file processing status")
     public Response getFileStatus(@Valid @NotBlank @PathParam("fileId") String fileId) {
         log.info("Request: Get status for fileId : {}", fileId);
 

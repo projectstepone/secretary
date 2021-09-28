@@ -16,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,7 +42,6 @@ public class FileDataDBCommand implements FileDataProvider {
                     return getFromDb(key);
                 });
     }
-
 
     @Override
     public Optional<FileData> save(FileData fileData) {
@@ -93,6 +93,7 @@ public class FileDataDBCommand implements FileDataProvider {
         try {
             return lookupDao.scatterGather(DetachedCriteria.forClass(StoredFileData.class))
                     .stream()
+                    .sorted(Comparator.comparing(StoredFileData::getCreated).reversed())
                     .map(FileDataUtils::toDto)
                     .collect(Collectors.toList());
         } catch (Exception ex) {
@@ -118,6 +119,7 @@ public class FileDataDBCommand implements FileDataProvider {
                     DetachedCriteria.forClass(StoredFileData.class)
                             .add(Restrictions.eq("hash", hashValue)))
                     .stream()
+                    .sorted(Comparator.comparing(StoredFileData::getCreated).reversed())
                     .map(FileDataUtils::toDto)
                     .findFirst();
         } catch (Exception ex) {
@@ -133,6 +135,7 @@ public class FileDataDBCommand implements FileDataProvider {
                     DetachedCriteria.forClass(StoredFileData.class)
                             .add(Restrictions.eq("user", user)))
                     .stream()
+                    .sorted(Comparator.comparing(StoredFileData::getCreated).reversed())
                     .map(FileDataUtils::toDto)
                     .collect(Collectors.toList());
         } catch (Exception ex) {

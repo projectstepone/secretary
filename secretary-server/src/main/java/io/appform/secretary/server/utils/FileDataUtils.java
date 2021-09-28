@@ -17,6 +17,7 @@ public class FileDataUtils{
                 .workflow(dao.getWorkflow())
                 .count(dao.getEntryCount())
                 .state(FileState.get(dao.getState()))
+                .createdAt(dao.getCreated().toLocaleString())
                 .build();
     }
 

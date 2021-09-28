@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -156,9 +157,11 @@ public class FileDataExecutor implements DataExecutor {
             log.error("Missing cell values: {} or headers: {}", cellValues, headerValues);
             return null;
         }
-        return IntStream.range(0, headerValues.size())
+        final Map<String, String> tokens = IntStream.range(0, headerValues.size())
                 .mapToObj(cellIndex -> new Pair<>(headerValues.get(cellIndex), cellValues.get(cellIndex)))
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+        tokens.put("now", String.valueOf(new Date().getTime()));
+        return tokens;
     }
 
     private FileData saveEntryInDbAndSendEvent(FileData data) {
