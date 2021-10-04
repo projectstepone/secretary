@@ -22,6 +22,11 @@
             <name>Clojars repository</name>
             <url>https://clojars.org/repo</url>
         </repository>
+        <repository>
+            <id>github</id>
+            <name>Http client</name>
+            <url>https://maven.pkg.github.com/projectstepone/http-client</url>
+        </repository>
     </repositories>
 
     <dependencies>
