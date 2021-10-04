@@ -25,11 +25,11 @@
             <label for="workflow-options">Select a workflow</label>
             <select class="form-control" id="workflow-options">
                 <option>None</option>
-                <option>Karnataka</option>
-                <option>Odisha</option>
-                <option>Bihar</option>
-                <option>Patna</option>
-                <option>Rourkela</option>
+                {{#workflows}}
+                    {{#enabled}}
+                        <option>{{name}}</option>
+                    {{/enabled}}
+                {{/workflows}}
             </select>
         </div>
         <div class="form-group">
@@ -96,7 +96,7 @@
         xhr.addEventListener('load', () => {
             const jsonResponse = JSON.parse(xhr.response)
             console.log('upload response', jsonResponse)
-            if (!jsonResponse.success) {
+            if (xhr.status !== 200) {
                 alertMessage.setAttribute("class", "alert alert-danger alert-dismissible")
                 alertMessage.style.visibility = 'visible'
                 alertMessageTxt.innerHTML = jsonResponse.error
@@ -106,7 +106,7 @@
             } else {
                 alertMessage.setAttribute("class", "alert alert-success alert-dismissible")
                 alertMessage.style.visibility = 'visible'
-                alertMessageTxt.innerText = 'Successfully uploaded'
+                alertMessageTxt.innerText = 'Successfully uploaded id: ' + jsonResponse.id
                 workflowSelector.selectedIndex = 0
                 inputFile.value = ''
                 validateInput()

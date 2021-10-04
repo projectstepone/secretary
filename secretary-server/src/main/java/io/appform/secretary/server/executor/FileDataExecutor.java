@@ -161,6 +161,7 @@ public class FileDataExecutor implements DataExecutor {
                 .mapToObj(cellIndex -> new Pair<>(headerValues.get(cellIndex), cellValues.get(cellIndex)))
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
         tokens.put("now", String.valueOf(new Date().getTime()));
+        tokens.put("wfSource", String.format("%s_%s_monitoring_%s", tokens.get("state").toLowerCase(), tokens.get("flow").toLowerCase(), "secretary"));
         return tokens;
     }
 

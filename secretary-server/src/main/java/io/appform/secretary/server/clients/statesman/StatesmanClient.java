@@ -25,7 +25,7 @@ import java.util.HashMap;
 @Singleton
 public class StatesmanClient {
 
-    private static final String ONE_SHOT_FINAL_CALLBACK_PATH = "callbacks/ingress/final/%s";
+    private static final String RAW_CALLBACK_PATH = "callbacks/ingress/raw/%s";
 
     private final HttpClient httpClient;
     private final HttpConfiguration configuration;
@@ -43,11 +43,11 @@ public class StatesmanClient {
         this.httpClient = new HttpClient(objectMapper, okHttpClient);
     }
 
-    public CallbackResponse oneShotCallback(final CallbackRequest request) {
+    public CallbackResponse rawCallback(final CallbackRequest request) {
         final Endpoint endpoint = new StaticEndpointProvider().provide(EndpointProviderContext.builder().configuration(this.configuration).build());
         final String baseUrl = resolveBaseUrl(endpoint);
-        final String ivrProvider = "";
-        final String url = String.format("%s/%s", baseUrl, String.format(ONE_SHOT_FINAL_CALLBACK_PATH, ivrProvider));
+        final String ivrProvider = "secretary";
+        final String url = String.format("%s/%s", baseUrl, String.format(RAW_CALLBACK_PATH, ivrProvider));
         final Response response = httpClient.post(url, request, new HashMap<>());
         if (!response.isSuccessful()) {
             log.error("call to {} failed with code: {} res body: {}", url, response.code(), HttpUtils.bodyAsString(response));

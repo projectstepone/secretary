@@ -16,6 +16,7 @@ import lombok.val;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -39,6 +40,7 @@ public class FileSchemaResource {
     @POST
     @Path("/create")
     @Operation(summary = "Create a file schema")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response createFileSchema(@Valid CreateRequest request) {
         log.info("Request: Create file schema : {}", request);
 
@@ -61,6 +63,7 @@ public class FileSchemaResource {
     @PUT
     @Path("/update")
     @Operation(summary = "Updates a file schema")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response updateFileSchema(@Valid CreateRequest request) {
         log.info("Request: update file schema : {}", request);
 

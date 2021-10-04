@@ -48,7 +48,7 @@ public class FileRowProcessor extends BaseProcessor<RawDataEntryMessage> {
     @Override
     protected boolean handle(RawDataEntryMessage rawDataEntryMessage) throws Exception {
         log.info("processing row: {}", rawDataEntryMessage);
-        final CallbackResponse response = statesmanClient.oneShotCallback(CallbackRequest.builder()
+        final CallbackResponse response = statesmanClient.rawCallback(CallbackRequest.builder()
                 .apiPath("apiPath")
                 .id("id")
                 .body(rawDataEntryMessage.getRawDataEntry().getData())

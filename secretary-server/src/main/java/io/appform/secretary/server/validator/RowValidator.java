@@ -26,8 +26,10 @@ public class RowValidator {
 
         val schemaSize = schema.getCellSchema().size();
         val dataSize = entry.getData().size();
-        if (schemaSize != dataSize) {
-            log.warn("Schema and data mismatch : schema entries {} Data entries: {}", schemaSize, dataSize);
+
+        // we add two extra fields now and wfSource
+        if (schemaSize != (dataSize - 2)) {
+            log.warn("Schema and data mismatch : schema entries {} Data entries: {} workflow: {}", schemaSize, dataSize, schema.getWorkflow().getName());
             return null;
         }
 

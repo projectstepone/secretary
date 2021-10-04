@@ -18,6 +18,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -84,6 +85,7 @@ public class CellSchemaResource {
     @POST
     @Path("/create")
     @Operation(summary = "Create and enable a new schema")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response createSchema(@Valid CreateCellSchemaRequest request) {
         log.info("Request: Create schema: {}", request);
 
@@ -103,6 +105,7 @@ public class CellSchemaResource {
     @PUT
     @Path("/update/{schemaId}")
     @Operation(summary = "Update schema")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSchema(@PathParam("schemaId") String schemaId,
                                  @Valid UpdateRequest request) {
         log.info("Request: Update schema: uuid {} to {}", schemaId, request);

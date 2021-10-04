@@ -1,10 +1,10 @@
 server:
     applicationConnectors:
         - type: http
-          port: 8080
+          port: 5050
     adminConnectors:
         - type: http
-          port: 8081
+          port: 5051
     adminContextPath: /admin
     requestLog:
         appenders:
@@ -98,7 +98,7 @@ actorConfigs:
 statesmanHttpConfiguration:
     clientName: statesman
     host: localhost
-    port: 5050
+    port: 8080
     secure: false
     connections: 10
     idleTimeOutSeconds: 30
@@ -107,6 +107,6 @@ statesmanHttpConfiguration:
 
 idManHttpClientConfig:
     serviceId: SECRETARY
-    authEndpoint: "https://0f81-171-76-122-48.ngrok.io"
-    publicEndpoint: "https://e34e-171-76-122-48.ngrok.io"
-    authSecret: "4dcef2fe-7779-493c-b7ba-cdd9c23a7098"
+    authEndpoint: "https://aa18-122-172-244-210.ngrok.io"
+    publicEndpoint: "https://cc7f-122-172-244-210.ngrok.io"
+    authSecret: "abc216b2-b3a2-4f14-aace-d6a7273ac036"
