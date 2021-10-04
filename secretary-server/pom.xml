@@ -105,11 +105,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.appform</groupId>
-            <artifactId>secretary-publisher</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-views-mustache</artifactId>
             <version>${dropwizard.version}</version>
