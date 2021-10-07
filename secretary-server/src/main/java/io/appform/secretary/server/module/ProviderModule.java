@@ -21,7 +21,7 @@ import io.appform.secretary.server.command.impl.FileSchemaDBCommand;
 import io.appform.secretary.server.command.impl.WorkflowDBCommand;
 import io.appform.secretary.server.executor.DataExecutor;
 import io.appform.secretary.server.executor.FileDataExecutor;
-import io.dropwizard.setup.Environment;
+import io.dropwizard.jackson.Jackson;
 
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class ProviderModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public EventPublisher getEventPublisher(AppConfig appConfig, Environment environment) {
-        return EventPublishers.create(appConfig.getEventPublisherConfig(), environment.getObjectMapper());
+    public EventPublisher getEventPublisher(AppConfig appConfig) {
+        return EventPublishers.create(appConfig.getEventPublisherConfig(), Jackson.newObjectMapper());
     }
 }
