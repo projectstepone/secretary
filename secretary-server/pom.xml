@@ -28,10 +28,8 @@
             <url>https://maven.pkg.github.com/projectstepone/http-client</url>
         </repository>
         <repository>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases><enabled>false</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/releases</url>
         </repository>
     </repositories>
 
@@ -227,7 +225,7 @@
         <dependency>
             <groupId>io.appform.foxtrot.eventingester</groupId>
             <artifactId>event-ingester-client</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
@@ -316,5 +314,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
