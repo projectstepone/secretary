@@ -1,10 +1,10 @@
 package io.appform.secretary.server.executor;
 
 import com.google.inject.Singleton;
+import io.appform.eventingester.client.EventPublisher;
 import io.appform.secretary.model.FileData;
 import io.appform.secretary.model.Pair;
 import io.appform.secretary.model.RawDataEntry;
-import io.appform.secretary.model.configuration.SecretaryConfiguration;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
 import io.appform.secretary.model.schema.file.FileSchema;
@@ -17,11 +17,11 @@ import io.appform.secretary.server.command.FileRowDataProvider;
 import io.appform.secretary.server.command.FileSchemaProvider;
 import io.appform.secretary.server.internal.model.InputFileData;
 import io.appform.secretary.server.utils.CommonUtils;
+import io.appform.secretary.server.utils.EventUtils;
 import io.appform.secretary.server.validator.RowValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import lombok.var;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
@@ -41,12 +41,12 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class FileDataExecutor implements DataExecutor {
 
-    private final SecretaryConfiguration serviceConfig;
     private final FileDataProvider fileDataProvider;
     private final FileRowDataProvider rowDataProvider;
     private final FileSchemaProvider fileSchemaProvider;
     private final ActorManager actorManager;
     private final RowValidator validator;
+    private final EventPublisher eventPublisher;
 
     private static final String ENTRY_SEPARATOR = ",";
     private static final String LINE_SEPARATOR = "\n";
@@ -87,10 +87,19 @@ public class FileDataExecutor implements DataExecutor {
             if (data.getCount() == entries.size()) {
                 updateEntryInDbAndSendEvent(data, FileState.PROCESSED);
             }
+            publishFileAcceptedEvent(data, validEntries.size());
             return data;
         } catch (Exception ex) {
             log.warn("Hit exception : {}", ex.getMessage());
             throw ex;
+        }
+    }
+
+    private void publishFileAcceptedEvent(FileData data, int validEntryCounts) {
+        try {
+            eventPublisher.publish(EventUtils.fileAcceptedEvent(data, validEntryCounts));
+        } catch (Exception e) {
+            log.error("Error while publishing event", e);
         }
     }
 
@@ -167,16 +176,12 @@ public class FileDataExecutor implements DataExecutor {
 
     private FileData saveEntryInDbAndSendEvent(FileData data) {
         val savedData = fileDataProvider.save(data);
-
-        //TODO: Send event based on error check
         return savedData.get();
     }
 
     private FileData updateEntryInDbAndSendEvent(FileData data, FileState state) {
         data.setState(state);
         val savedData = fileDataProvider.update(data);
-
-        //TODO: Send event based on error check
         return savedData.get();
     }
 }

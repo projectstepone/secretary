@@ -9,7 +9,6 @@ import io.appform.secretary.server.dao.StoredFileData;
 import io.appform.secretary.server.utils.FileDataUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import lombok.var;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 

@@ -13,6 +13,7 @@ import io.appform.dropwizard.actors.config.RMQConfig;
 import io.appform.dropwizard.actors.retry.config.CountLimitedExponentialWaitRetryConfig;
 import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
+import io.appform.eventingester.client.EventPublisherConfig;
 import io.appform.http.client.models.HttpConfiguration;
 import io.appform.secretary.server.actors.ActorType;
 import io.appform.secretary.server.module.ClientModule;
@@ -68,6 +69,7 @@ public class TestBase {
         MapperUtils.initialize(new ObjectMapper());
 
         appConfig.setStatesmanHttpConfiguration(statesmanHttpClientConfig());
+        appConfig.setEventPublisherConfig(getEventPublisherConfig());
         appConfig.setActorConfigs(actorConfigs());
         appConfig.setRmqConfig(rmqConfig);
         appConfig.setShards(hibernateFactory);
@@ -130,6 +132,13 @@ public class TestBase {
                 .port("3455")
                 .secure(false)
                 .build();
+    }
+
+    private EventPublisherConfig getEventPublisherConfig() {
+        val config = new EventPublisherConfig();
+        config.setServer("http://localhost:3030");
+        config.setQueuePath("/tmp/secretary");
+        return config;
     }
 
     private Map<ActorType, ActorConfig> actorConfigs() {

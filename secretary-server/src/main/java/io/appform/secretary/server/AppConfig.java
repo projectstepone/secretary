@@ -4,9 +4,9 @@ import in.vectorpro.dropwizard.swagger.SwaggerBundleConfiguration;
 import io.appform.dropwizard.actors.actor.ActorConfig;
 import io.appform.dropwizard.actors.config.RMQConfig;
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
+import io.appform.eventingester.client.EventPublisherConfig;
 import io.appform.http.client.models.HttpConfiguration;
 import io.appform.idman.client.http.IdManHttpClientConfig;
-import io.appform.secretary.model.configuration.SecretaryConfiguration;
 import io.appform.secretary.server.actors.ActorType;
 import io.dropwizard.Configuration;
 import lombok.AllArgsConstructor;
@@ -32,10 +32,6 @@ public class AppConfig extends Configuration {
     @Valid
     private SwaggerBundleConfiguration swagger = new SwaggerBundleConfiguration();
 
-    @NotNull
-    @Valid
-    private SecretaryConfiguration secretaryConfig;
-
     @Valid
     @NotNull
     private RMQConfig rmqConfig;
@@ -51,4 +47,8 @@ public class AppConfig extends Configuration {
     @Valid
     @NotNull
     private IdManHttpClientConfig idManHttpClientConfig = new IdManHttpClientConfig();
+
+    @Valid
+    @NotNull
+    private EventPublisherConfig eventPublisherConfig;
 }

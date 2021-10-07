@@ -21,10 +21,6 @@ logging:
       timeZone: IST
       logFormat: "%(%-5level) [%date] %X{TRACE-ID} [%thread] [%logger{0}]: %message%n"
 
-secretaryConfig:
-  serviceBaseUrl: http://localhost:8080
-  fileUploadPath: /secretary/v1/data/file/upload
-
 shards:
   shards:
     - driverClass: org.mariadb.jdbc.Driver
@@ -110,3 +106,12 @@ idManHttpClientConfig:
   serviceId: SECRETARY
   authEndpoint: "https://a3ee-122-167-112-171.ngrok.io"
   authSecret: "6d585863-403c-4ae7-a6d1-dba976734ea0"
+
+eventPublisherConfig:
+  server: ${EVENT_INGESTION_ENDPOINT}
+  queuePath: /tmp/secretary
+  connections: 10
+  idleTimeOutSeconds: 30
+  connectTimeoutMs: 10000
+  opTimeoutMs: 10000
+  disabled: ${EVENT_DISABLED}

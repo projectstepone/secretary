@@ -17,7 +17,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dropwizard.version>2.0.23</dropwizard.version>
+        <dropwizard.version>2.0.24</dropwizard.version>
         <dbsharding.version>2.0.23-2</dbsharding.version>
         <lombok.version>1.18.12</lombok.version>
         <guice.version>5.3.0</guice.version>
@@ -66,10 +66,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.8.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
+                    <release>11</release>
                     <compilerArgument>-parameters</compilerArgument>
                 </configuration>
             </plugin>
