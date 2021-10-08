@@ -7,12 +7,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class RegexSchema extends Schema {
 
+    @NotNull
+    @NotBlank
     private String regex;
 
     @Builder

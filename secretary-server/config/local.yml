@@ -1,0 +1,117 @@
+server:
+    applicationConnectors:
+        - type: http
+          port: 5050
+    adminConnectors:
+        - type: http
+          port: 5051
+    adminContextPath: /admin
+    requestLog:
+        appenders:
+            - type: console
+              timeZone: IST
+
+logging:
+    level: INFO
+    loggers:
+        io.appform.secretary: INFO
+    appenders:
+        - type: console
+          threshold: TRACE
+          timeZone: IST
+          logFormat: "%(%-5level) [%date] %X{TRACE-ID} [%thread] [%logger{0}]: %message%n"
+
+shards:
+    shards:
+        - driverClass: org.mariadb.jdbc.Driver
+          user: ${DB_USER}
+          password: ${DB_PASSWORD}
+          url: ${SHARD0_CONNECTION_STRING}
+          properties:
+              charSet: UTF-8
+              hibernate.dialect: org.hibernate.dialect.MySQLDialect
+          maxWaitForConnection: 1s
+          validationQuery: "/* MyApplication Health Check */ SELECT 1"
+          minSize: 8
+          maxSize: 8
+          initialSize: 8
+          logAbandonedConnections: true
+          logValidationErrors: true
+          checkConnectionWhileIdle: true
+          checkConnectionOnConnect: true
+          validationQueryTimeout: 1s
+          removeAbandoned: true
+          evictionInterval: 30s
+          minIdleTime: 1m
+        - driverClass: org.mariadb.jdbc.Driver
+          user: ${DB_USER}
+          password: ${DB_PASSWORD}
+          url: ${SHARD1_CONNECTION_STRING}
+          properties:
+              charSet: UTF-8
+              hibernate.dialect: org.hibernate.dialect.MySQLDialect
+              #hibernate.hbm2ddl.auto: create
+          maxWaitForConnection: 1s
+          validationQuery: "/* MyApplication Health Check */ SELECT 1"
+          minSize: 8
+          maxSize: 8
+          initialSize: 8
+          logAbandonedConnections: true
+          logValidationErrors: true
+          checkConnectionWhileIdle: true
+          checkConnectionOnConnect: true
+          validationQueryTimeout: 1s
+          removeAbandoned: true
+          evictionInterval: 30s
+          minIdleTime: 1m
+
+swagger:
+    resourcePackage: io.appform.secretary.server.resources
+    title: Secretary
+    description: Secretary Backend
+
+rmqConfig:
+    brokers:
+        - host: ${RMQ_HOST}
+          port: ${RMQ_PORT}
+    userName: guest
+    threadPoolSize: 20
+    password: guest
+    secure: false
+
+actorConfigs:
+    FILE_ROW_PROCESSOR:
+        prefetchCount: 2
+        concurrency: 2
+        prefix: secretary.actor
+        exchange: secretary.rows
+        retryConfig:
+            type: COUNT_LIMITED_EXPONENTIAL_BACKOFF
+            maxAttempts: 6
+            multipier: 100
+            maxTimeBetweenRetries: 20s
+
+statesmanHttpConfiguration:
+    clientName: statesman
+    host: localhost
+    port: 8080
+    secure: false
+    connections: 10
+    idleTimeOutSeconds: 30
+    connectTimeoutMs: 10000
+    opTimeoutMs: 10000
+
+idManHttpClientConfig:
+    serviceId: SECRETARY
+    authEndpoint: "https://aa18-122-172-244-210.ngrok.io"
+    publicEndpoint: "https://cc7f-122-172-244-210.ngrok.io"
+    authSecret: "abc216b2-b3a2-4f14-aace-d6a7273ac036"
+
+eventPublisherConfig:
+    server: ${EVENT_INGESTION_ENDPOINT}
+    queuePath: /tmp/secretary
+    connections: 10
+    idleTimeOutSeconds: 30
+    connectTimeoutMs: 10000
+    opTimeoutMs: 10000
+    disabled: ${EVENT_DISABLED}

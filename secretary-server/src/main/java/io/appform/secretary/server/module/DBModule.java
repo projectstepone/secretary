@@ -5,17 +5,18 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.dao.LookupDao;
+import io.appform.secretary.server.AppConfig;
+import io.appform.secretary.server.dao.StoredCellSchema;
 import io.appform.secretary.server.dao.StoredFileData;
 import io.appform.secretary.server.dao.StoredFileRowMetadata;
 import io.appform.secretary.server.dao.StoredFileSchema;
-import io.appform.secretary.server.dao.StoredCellSchema;
 import io.appform.secretary.server.dao.StoredWorkflow;
 
 public class DBModule extends AbstractModule {
 
-    private final DBShardingBundle<?> dbBundle;
+    private final DBShardingBundle<AppConfig> dbBundle;
 
-    public DBModule(DBShardingBundle<?> dbBundle) {
+    public DBModule(DBShardingBundle<AppConfig> dbBundle) {
         this.dbBundle = dbBundle;
     }
 

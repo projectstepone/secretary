@@ -1,15 +1,16 @@
 package io.appform.secretary.server.resources;
 
+import com.google.inject.Singleton;
 import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
 import io.appform.secretary.model.schema.cell.CellSchema;
-import io.appform.secretary.model.schema.cell.request.CreateRequest;
+import io.appform.secretary.model.schema.cell.request.CreateCellSchemaRequest;
 import io.appform.secretary.model.schema.cell.request.UpdateRequest;
 import io.appform.secretary.server.command.CellSchemaProvider;
 import io.appform.secretary.server.translator.request.CellSchemaTranslator;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -17,6 +18,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -27,13 +29,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Path("/v1/schema/cell")
+@Path("v1/schema/cell")
 @Produces(MediaType.APPLICATION_JSON)
-@Api("Cell Schema APIs")
+@Tag(name = "Cell Schema APIs")
+@Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class CellSchemaResource {
 
@@ -41,7 +43,7 @@ public class CellSchemaResource {
     private final CellSchemaProvider schemaProvider;
 
     @GET
-    @ApiOperation("Get all schemas")
+    @Operation(summary = "Get all schemas")
     public Response getAllSchema(@QueryParam("active") boolean active) {
         log.info("Request: Get detail for all schemas");
         List<CellSchema> schemas = schemaProvider.getAll();
@@ -59,7 +61,7 @@ public class CellSchemaResource {
 
     @GET
     @Path("/{schemaId}")
-    @ApiOperation("Get schema for given ID")
+    @Operation(summary = "Get schema for given ID")
     public Response getSchema(@PathParam("schemaId") @Valid @NotBlank final String schemaId) {
         log.info("Request: Details for schema for uuid : {}", schemaId);
 
@@ -82,12 +84,11 @@ public class CellSchemaResource {
 
     @POST
     @Path("/create")
-    @ApiOperation("Create and enable a new schema")
-    public Response createSchema(@Valid CreateRequest request) {
+    @Operation(summary = "Create and enable a new schema")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createSchema(@Valid CreateCellSchemaRequest request) {
         log.info("Request: Create schema: {}", request);
 
-        //TODO: Filter instance of abstract class
-        //TODO: Add validator for request
         val schema = translator.toSchema(request);
         val newSchema = schemaProvider.save(schema);
         if (!newSchema.isPresent()) {
@@ -103,7 +104,8 @@ public class CellSchemaResource {
 
     @PUT
     @Path("/update/{schemaId}")
-    @ApiOperation("Update schema")
+    @Operation(summary = "Update schema")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSchema(@PathParam("schemaId") String schemaId,
                                  @Valid UpdateRequest request) {
         log.info("Request: Update schema: uuid {} to {}", schemaId, request);

@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -15,6 +17,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ListSchema extends Schema {
 
+    @NotNull
+    @NotEmpty
     private List<String> values;
 
     @Builder

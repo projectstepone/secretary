@@ -6,22 +6,27 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Stage;
+import in.vectorpro.dropwizard.swagger.SwaggerBundle;
+import in.vectorpro.dropwizard.swagger.SwaggerBundleConfiguration;
+import io.appform.dropwizard.actors.RabbitmqActorBundle;
+import io.appform.dropwizard.actors.config.RMQConfig;
 import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
+import io.appform.idman.authbundle.IdmanAuthBundle;
+import io.appform.idman.client.http.IdManHttpClientConfig;
 import io.appform.secretary.server.exception.GenericExceptionMapper;
 import io.appform.secretary.server.module.ClientModule;
 import io.appform.secretary.server.module.DBModule;
 import io.appform.secretary.server.module.ProviderModule;
 import io.appform.secretary.server.utils.MapperUtils;
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
-import io.federecio.dropwizard.swagger.SwaggerBundle;
-import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import lombok.val;
 import ru.vyarus.dropwizard.guice.GuiceBundle;
 
@@ -48,12 +53,15 @@ public class App extends Application<AppConfig> {
         MapperUtils.initialize(mapper);
 
         val dbBundle = getDBShardingBundle();
-
+        val actorBundle = initRmqBundle();
+        bootstrap.addBundle(actorBundle);
         bootstrap.addBundle(dbBundle);
-        bootstrap.addBundle(getGuiceBundle(dbBundle));
+        bootstrap.addBundle(getGuiceBundle(dbBundle, actorBundle));
         bootstrap.addBundle(getSwaggerBundle());
         bootstrap.addBundle(new MultiPartBundle());
         bootstrap.addBundle(new ViewBundle<>());
+        bootstrap.addBundle(idmanAuthBundle());
+        bootstrap.addBundle(new AssetsBundle());
     }
 
     @Override
@@ -71,11 +79,11 @@ public class App extends Application<AppConfig> {
         };
     }
 
-    private GuiceBundle<AppConfig> getGuiceBundle(DBShardingBundle<AppConfig> dbShardingBundle) {
+    private GuiceBundle getGuiceBundle(DBShardingBundle<AppConfig> dbShardingBundle, RabbitmqActorBundle<AppConfig> actorBundle) {
         return GuiceBundle.<AppConfig>builder()
                 .enableAutoConfig(getClass().getPackage().getName())
                 .modules(new DBModule(dbShardingBundle))
-                .modules(new ClientModule())
+                .modules(new ClientModule(actorBundle))
                 .modules(new ProviderModule())
                 .build(Stage.PRODUCTION);
     }
@@ -85,6 +93,29 @@ public class App extends Application<AppConfig> {
             @Override
             protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(AppConfig config) {
                 return config.getSwagger();
+            }
+        };
+    }
+
+    private RabbitmqActorBundle<AppConfig> initRmqBundle() {
+        return new RabbitmqActorBundle<AppConfig>() {
+            @Override
+            protected RMQConfig getConfig(final AppConfig config) {
+                return config.getRmqConfig();
+            }
+        };
+    }
+
+    private IdmanAuthBundle<AppConfig> idmanAuthBundle() {
+        return new IdmanAuthBundle<AppConfig>() {
+            @Override
+            public void initialize(Bootstrap<?> bootstrap) {
+                //
+            }
+
+            @Override
+            public IdManHttpClientConfig clientConfig(AppConfig config) {
+                return config.getIdManHttpClientConfig();
             }
         };
     }

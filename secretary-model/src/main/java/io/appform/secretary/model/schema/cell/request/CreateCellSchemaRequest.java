@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateRequest {
+public class CreateCellSchemaRequest {
 
     @Valid
     @NotBlank

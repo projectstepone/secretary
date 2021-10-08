@@ -54,4 +54,20 @@ public class MapperUtils {
             throw SecretaryError.propagate(ex, ResponseCode.JSON_ERROR);
         }
     }
+
+    @SneakyThrows
+    public static  <T> T deserialize(byte[] data, Class<T> valueType) {
+        if (data == null){
+            return null;
+        }
+        return objectMapper.readValue(data, valueType);
+    }
+
+    @SneakyThrows
+    public static  <T> T deserializeString(String data, Class<T> valueType) {
+        if (data == null){
+            return null;
+        }
+        return objectMapper.readValue(data, valueType);
+    }
 }

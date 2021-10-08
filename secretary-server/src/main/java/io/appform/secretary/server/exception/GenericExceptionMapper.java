@@ -4,6 +4,7 @@ import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.exception.SecretaryError;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
@@ -12,9 +13,10 @@ public class GenericExceptionMapper implements ExceptionMapper<RuntimeException>
 
     @Override
     public Response toResponse(RuntimeException ex) {
-        //TODO: Add event for exception
-        log.error("Exception occurred: {}", ex.getMessage());
-
+        log.error("Exception occurred", ex);
+        if (ex instanceof WebApplicationException) {
+            return ((WebApplicationException) ex).getResponse();
+        }
         if (ex instanceof SecretaryError) {
             final SecretaryError error = (SecretaryError) ex;
             return Response

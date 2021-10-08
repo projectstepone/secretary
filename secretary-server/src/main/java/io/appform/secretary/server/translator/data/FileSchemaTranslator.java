@@ -1,5 +1,6 @@
 package io.appform.secretary.server.translator.data;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import io.appform.secretary.model.Workflow;
 import io.appform.secretary.model.exception.ResponseCode;
@@ -9,6 +10,7 @@ import io.appform.secretary.server.command.CellSchemaProvider;
 import io.appform.secretary.server.command.WorkflowProvider;
 import io.appform.secretary.server.dao.StoredFileSchema;
 import io.appform.secretary.model.schema.file.FileSchema;
+import io.dropwizard.util.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -57,6 +59,9 @@ public class FileSchemaTranslator {
     }
 
     private List<String> getList(String input) {
+        if (Strings.isNullOrEmpty(input)) {
+            return Lists.newArrayList();
+        }
         return Arrays.asList(input.split(SEPARATOR));
     }
 

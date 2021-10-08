@@ -5,7 +5,6 @@ server:
   adminConnectors:
     - type: http
       port: 8081
-  applicationContextPath: /secretary
   adminContextPath: /admin
   requestLog:
     appenders:
@@ -21,11 +20,6 @@ logging:
       threshold: TRACE
       timeZone: IST
       logFormat: "%(%-5level) [%date] %X{TRACE-ID} [%thread] [%logger{0}]: %message%n"
-
-secretaryConfig:
-  kafkaTopic: secretary.filedata.random
-  serviceBaseUrl: http://localhost:8080
-  fileUploadPath: /secretary/v1/data/file/upload
 
 shards:
   shards:
@@ -73,16 +67,51 @@ shards:
       minIdleTime: 1m
 
 swagger:
-  resourcePackage: io.appform.secretary.resources
+  resourcePackage: io.appform.secretary.server.resources
   title: Secretary
   description: Secretary Backend
 
-producer:
-  servers: broker:9092
-  ack: all
-  retries: 100
-  batchSize: 100
-  lingerMilliseconds: 1
-  bufferSize: 1024000
-  serializer: org.apache.kafka.common.serialization.StringSerializer
-  deserializer: org.apache.kafka.common.serialization.StringSerializer
+rmqConfig:
+  brokers:
+    - host: ${RMQ_HOST}
+      port: ${RMQ_PORT}
+  userName: guest
+  threadPoolSize: 20
+  password: guest
+  secure: false
+
+actorConfigs:
+  FILE_ROW_PROCESSOR:
+    prefetchCount: 2
+    concurrency: 2
+    prefix: secretary.actor
+    exchange: secretary.rows
+    retryConfig:
+      type: COUNT_LIMITED_EXPONENTIAL_BACKOFF
+      maxAttempts: 6
+      multipier: 100
+      maxTimeBetweenRetries: 20s
+
+statesmanHttpConfiguration:
+  clientName: statesman
+  host: 192.168.1.5
+  port: 5050
+  secure: false
+  connections: 10
+  idleTimeOutSeconds: 30
+  connectTimeoutMs: 10000
+  opTimeoutMs: 10000
+
+idManHttpClientConfig:
+  serviceId: SECRETARY
+  authEndpoint: "https://a3ee-122-167-112-171.ngrok.io"
+  authSecret: "6d585863-403c-4ae7-a6d1-dba976734ea0"
+
+eventPublisherConfig:
+  server: ${EVENT_INGESTION_ENDPOINT}
+  queuePath: /tmp/secretary
+  connections: 10
+  idleTimeOutSeconds: 30
+  connectTimeoutMs: 10000
+  opTimeoutMs: 10000
+  disabled: ${EVENT_DISABLED}

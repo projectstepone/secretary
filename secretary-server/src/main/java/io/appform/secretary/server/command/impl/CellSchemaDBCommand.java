@@ -9,7 +9,6 @@ import io.appform.secretary.server.dao.StoredCellSchema;
 import io.appform.secretary.server.translator.data.CellSchemaTranslator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import lombok.var;
 import org.hibernate.criterion.DetachedCriteria;
 
 import javax.inject.Inject;

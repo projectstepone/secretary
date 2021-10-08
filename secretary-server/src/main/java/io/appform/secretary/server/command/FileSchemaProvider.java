@@ -11,7 +11,7 @@ public interface FileSchemaProvider {
 
     Optional<FileSchema> update(FileSchema schema);
 
-    Optional<FileSchema> get(String uuid);
+    Optional<FileSchema> get(String workflow);
 
     List<FileSchema> getAll();
 }

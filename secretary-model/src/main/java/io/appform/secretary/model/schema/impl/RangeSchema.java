@@ -7,13 +7,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class RangeSchema extends Schema {
-
+    @NotNull
+    @NotBlank
     private String start;
+    @NotNull
+    @NotBlank
     private String end;
 
     @Builder

@@ -18,4 +18,5 @@ public class FileData {
     private String hash;
     private long count;
     private FileState state;
+    private String createdAt;
 }

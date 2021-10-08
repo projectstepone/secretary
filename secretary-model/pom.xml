@@ -11,5 +11,13 @@
 
     <artifactId>secretary-model</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-jackson</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

@@ -1,17 +1,17 @@
 package io.appform.secretary.server.resources;
 
+import com.google.inject.Singleton;
 import io.appform.secretary.model.GenericResponse;
 import io.appform.secretary.model.Workflow;
 import io.appform.secretary.model.exception.ResponseCode;
 import io.appform.secretary.model.exception.SecretaryError;
 import io.appform.secretary.server.command.impl.FileDataDBCommand;
 import io.appform.secretary.server.command.impl.WorkflowDBCommand;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import lombok.var;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.inject.Inject;
@@ -26,9 +26,10 @@ import javax.ws.rs.core.Response;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Path("/v1/housekeeping")
+@Path("v1/housekeeping")
 @Produces(MediaType.APPLICATION_JSON)
-@Api("Housekeeping APIs")
+@Tag(name = "Housekeeping APIs")
+@Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class HousekeepingResource {
 
@@ -37,7 +38,7 @@ public class HousekeepingResource {
 
     @GET
     @Path("/file/{userId}")
-    @ApiOperation("Get information about all files uploaded by a user")
+    @Operation(summary = "Get information about all files uploaded by a user")
     public Response getFilesByUser(@Valid @NotBlank @PathParam("userId") String userId) {
         log.info("Request: List files uploaded by user: {}", userId);
 
@@ -54,7 +55,7 @@ public class HousekeepingResource {
 
     @GET
     @Path("/workflow/{workflowId}")
-    @ApiOperation("Get information for a workflow")
+    @Operation(summary = "Get information for a workflow")
     public Response getWorkflow(@Valid @NotBlank @PathParam("workflowId") String workflowId) {
         log.info("Request: Details for workflow: {}", workflowId);
 
@@ -76,7 +77,7 @@ public class HousekeepingResource {
 
     @GET
     @Path("/workflow")
-    @ApiOperation("Get information for a workflow")
+    @Operation(summary = "Get information for a workflow")
     public Response getAllWorkflow(@QueryParam("active") boolean active) {
         log.info("Request: Get detail for all workflow");
 

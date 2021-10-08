@@ -6,6 +6,9 @@ import io.appform.secretary.model.schema.impl.ListSchema;
 import io.appform.secretary.model.schema.impl.RangeSchema;
 import io.appform.secretary.model.schema.impl.RegexSchema;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
@@ -15,8 +18,10 @@ import lombok.Data;
         @JsonSubTypes.Type(value = RegexSchema.class, name = ValidationType.VALIDATION_REGEX_TEXT)
 })
 public abstract class Schema {
-
+    @NotNull
     private final ValidationType type;
+    @NotNull
+    @NotBlank
     private String tag;
 
     protected Schema(ValidationType type, String tag) {
