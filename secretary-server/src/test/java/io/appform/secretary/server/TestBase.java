@@ -129,7 +129,7 @@ public class TestBase {
                 .idleTimeOutSeconds(3000)
                 .opTimeoutMs(3000)
                 .host("")
-                .port("3455")
+                .port(3455)
                 .secure(false)
                 .build();
     }
