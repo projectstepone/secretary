@@ -121,7 +121,7 @@
         <dependency>
             <groupId>io.appform.http</groupId>
             <artifactId>http-client</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.validation</groupId>
