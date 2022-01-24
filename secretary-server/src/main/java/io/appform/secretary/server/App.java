@@ -9,6 +9,7 @@ import com.google.inject.Stage;
 import in.vectorpro.dropwizard.swagger.SwaggerBundle;
 import in.vectorpro.dropwizard.swagger.SwaggerBundleConfiguration;
 import io.appform.dropwizard.actors.RabbitmqActorBundle;
+import io.appform.dropwizard.actors.TtlConfig;
 import io.appform.dropwizard.actors.config.RMQConfig;
 import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
@@ -99,6 +100,11 @@ public class App extends Application<AppConfig> {
 
     private RabbitmqActorBundle<AppConfig> initRmqBundle() {
         return new RabbitmqActorBundle<AppConfig>() {
+            @Override
+            protected TtlConfig ttlConfig() {
+                return null;
+            }
+
             @Override
             protected RMQConfig getConfig(final AppConfig config) {
                 return config.getRmqConfig();

@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import io.appform.dropwizard.actors.RabbitmqActorBundle;
+import io.appform.dropwizard.actors.TtlConfig;
 import io.appform.dropwizard.actors.actor.ActorConfig;
 import io.appform.dropwizard.actors.config.RMQConfig;
 import io.appform.dropwizard.actors.retry.config.CountLimitedExponentialWaitRetryConfig;
@@ -83,6 +84,11 @@ public class TestBase {
         when(bootstrap.getHealthCheckRegistry()).thenReturn(Mockito.mock(HealthCheckRegistry.class));
 
         val rmqBundle = new RabbitmqActorBundle<AppConfig>() {
+            @Override
+            protected TtlConfig ttlConfig() {
+                return null;
+            }
+
             @Override
             protected RMQConfig getConfig(final AppConfig config) {
                 return config.getRmqConfig();
