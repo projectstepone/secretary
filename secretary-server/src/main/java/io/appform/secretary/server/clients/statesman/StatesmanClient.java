@@ -1,6 +1,5 @@
 package io.appform.secretary.server.clients.statesman;
 
-import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -33,10 +32,8 @@ public class StatesmanClient {
     @Inject
     public StatesmanClient(
             final ObjectMapper objectMapper,
-            final MetricRegistry metricRegistry,
             @Named("statesmanHttpConfiguration") final HttpConfiguration configuration) {
         final OkHttpClient okHttpClient = HttpClientBuilder.builder()
-                .withMetricRegistry(metricRegistry)
                 .withConfiguration(configuration)
                 .build();
         this.configuration = configuration;
