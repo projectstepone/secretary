@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.Response;
 @Tag(name = "Workflow APIs")
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
+@PermitAll
 public class WorkflowResource {
 
     private final WorkflowProvider dbCommand;

@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 @Tag(name = "UI apis")
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
+@RolesAllowed("SECRETARY_USER")
 public class UiResource {
 
     private static final String CONSOLE_TEMPLATE = "console.mustache";
@@ -32,7 +33,6 @@ public class UiResource {
     private final FileDataDBCommand fileDataDBCommand;
 
     @GET
-    @RolesAllowed("SECRETARY_USER")
     @Operation(summary = "Generates html console view")
     public ConsoleView getView(@Auth final ServiceUserPrincipal principal) {
         return new ConsoleView(CONSOLE_TEMPLATE, principal.getServiceUser(), dbCommand.getAll(), fileDataDBCommand.getAll());

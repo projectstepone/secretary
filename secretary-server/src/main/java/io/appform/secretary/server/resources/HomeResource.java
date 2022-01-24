@@ -4,6 +4,7 @@ import com.google.inject.Singleton;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -15,6 +16,7 @@ import java.net.URI;
 @Singleton
 @Tag(name = "Home page")
 @Produces(MediaType.APPLICATION_JSON)
+@PermitAll
 public class HomeResource {
 
     @GET

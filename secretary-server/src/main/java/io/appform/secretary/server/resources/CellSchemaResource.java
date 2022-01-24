@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 @Tag(name = "Cell Schema APIs")
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
+@PermitAll
 public class CellSchemaResource {
 
     private final CellSchemaTranslator translator;

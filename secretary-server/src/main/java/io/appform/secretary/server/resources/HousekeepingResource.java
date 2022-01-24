@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @Tag(name = "Housekeeping APIs")
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
+@PermitAll
 public class HousekeepingResource {
 
     private final FileDataDBCommand filedataCommand;
