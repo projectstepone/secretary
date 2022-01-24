@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import io.appform.dropwizard.actors.ConnectionRegistry;
 import io.appform.dropwizard.actors.RabbitmqActorBundle;
-import io.appform.dropwizard.actors.connectivity.RMQConnection;
 import io.appform.http.client.models.HttpConfiguration;
 import io.appform.secretary.server.AppConfig;
 
@@ -16,12 +15,6 @@ public class ClientModule extends AbstractModule {
 
     public ClientModule(final RabbitmqActorBundle<AppConfig> actorBundle) {
         this.actorBundle = actorBundle;
-    }
-
-    @Provides
-    @Singleton
-    public RMQConnection getRMQConnection() {
-        return actorBundle.getConnection();
     }
 
     @Provides
